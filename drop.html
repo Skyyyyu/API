@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Drop &middot; GTPS.Host Lua API</title>
+<meta name="description" content="An item lying on the ground in a world, from getDroppedItems() or spawnItem().">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg gtps-navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <svg class="gtps-logo" width="30" height="30" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="#a9db4d" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="4,9.5 16,16 16,28.5 4,22" fill="#6f9a2a" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,16 28,9.5 28,22 16,28.5" fill="#c97a2e" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="url(#gtpsSheen)" opacity="0.5"/>
+        <defs>
+          <linearGradient id="gtpsSheen" x1="4" y1="3" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      GTPS.Host <span style="color:var(--text-faint);font-weight:400;">/ Lua API</span>
+    </a>
+    <div class="d-flex align-items-center order-lg-3 gap-2">
+      <a class="btn-discord-nav d-none d-sm-inline-flex" href="https://discord.gg/gtpshost" target="_blank" rel="noopener" aria-label="Join the GTPS.Host Discord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse order-lg-2" id="mainNav">
+      <ul class="navbar-nav ms-auto flex-wrap">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">World & Tiles</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="world.html">World</a></li><li><a class="dropdown-item" href="tile.html">Tile</a></li><li><a class="dropdown-item active" href="drop.html">Drop</a></li><li><a class="dropdown-item" href="iotm.html">IOTM</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items & Shop</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="item.html">Item</a></li><li><a class="dropdown-item" href="shopitem.html">ShopItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rendering</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="texture.html">Texture</a></li><li><a class="dropdown-item" href="sprite.html">Sprite</a></li><li><a class="dropdown-item" href="rendertexture.html">RenderTexture</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Avatar & Player</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="avatar.html">Avatar</a></li><li><a class="dropdown-item" href="avatarplayerautofarm.html">AvatarPlayerAutofarm</a></li><li><a class="dropdown-item" href="avatarplayerinventoryitem.html">AvatarPlayerInventoryItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Discord Integration</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="discordbot.html">DiscordBot</a></li><li><a class="dropdown-item" href="discordslashcommandevent.html">DiscordSlashCommandEvent</a></li><li><a class="dropdown-item" href="discordbuttonclickevent.html">DiscordButtonClickEvent</a></li><li><a class="dropdown-item" href="discordformsubmitevent.html">DiscordFormSubmitEvent</a></li><li><a class="dropdown-item" href="discordmessagecreateevent.html">DiscordMessageCreateEvent</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="callbacks.html">Callbacks</a></li></ul>
+        </li>
+      </ul>
+      <a class="btn-discord-nav d-sm-none mt-2" href="https://discord.gg/gtpshost" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container docs-shell" style="padding-top:5.5rem;">
+  <div class="row">
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="docs-sidebar">
+        
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-G">G<span class="n">6</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="active" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <button class="btn btn-outline-light btn-sm d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+        &#9776; Browse &middot; jump to section or object
+      </button>
+
+      <h1 class="class-heading"><span class="slot" style="background:linear-gradient(135deg,#c9975c,#c9975cdd);width:38px;height:38px;font-size:.95rem;border-radius:7px;">Dr</span>Drop</h1>
+      <p class="class-sub">An item lying on the ground in a world, from getDroppedItems() or spawnItem().</p>
+      <span class="method-count-pill"><span class="dot"></span>6 methods documented</span>
+
+      <div class="search-wrap mt-4">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="docs-search" id="docsSearch" placeholder="Filter Drop&hellip; e.g. a name or keyword">
+      </div>
+      <div class="search-empty" id="searchEmpty">No entries match that search.</div>
+
+      
+    <section class="letter-group" id="grp-G">
+      <h2 class="letter-group-title"><span class="tag">G</span>G &middot; 6 methods</h2>
+      
+        <div class="method-card" id="drop-getitemid" data-search="drop:getitemid() returns the item id for this drop.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Drop</span>:<span class="fn">getItemID</span>()</div>
+          <p class="method-desc">Returns the item ID for this drop.</p>
+          <pre class="method-code"><code><span class="kw">local</span> itemID = drop:getItemID()
+<span class="kw">print</span>("itemID:", itemID)</code></pre>
+        </div>
+        <div class="method-card" id="drop-getitemcount" data-search="drop:getitemcount() returns the item count for this drop.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Drop</span>:<span class="fn">getItemCount</span>()</div>
+          <p class="method-desc">Returns the item count for this drop.</p>
+          <pre class="method-code"><code><span class="kw">local</span> itemCount = drop:getItemCount()
+<span class="kw">print</span>("itemCount:", itemCount)</code></pre>
+        </div>
+        <div class="method-card" id="drop-getposx" data-search="drop:getposx() returns the pos x for this drop.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Drop</span>:<span class="fn">getPosX</span>()</div>
+          <p class="method-desc">Returns the pos x for this drop.</p>
+          <pre class="method-code"><code><span class="kw">local</span> posX = drop:getPosX()
+<span class="kw">print</span>("posX:", posX)</code></pre>
+        </div>
+        <div class="method-card" id="drop-getposy" data-search="drop:getposy() returns the pos y for this drop.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Drop</span>:<span class="fn">getPosY</span>()</div>
+          <p class="method-desc">Returns the pos y for this drop.</p>
+          <pre class="method-code"><code><span class="kw">local</span> posY = drop:getPosY()
+<span class="kw">print</span>("posY:", posY)</code></pre>
+        </div>
+        <div class="method-card" id="drop-getuid" data-search="drop:getuid() returns the uid for this drop.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Drop</span>:<span class="fn">getUID</span>()</div>
+          <p class="method-desc">Returns the uid for this drop.</p>
+          <pre class="method-code"><code><span class="kw">local</span> uID = drop:getUID()
+<span class="kw">print</span>("uID:", uID)</code></pre>
+        </div>
+        <div class="method-card" id="drop-getflags" data-search="drop:getflags() returns the flags for this drop.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Drop</span>:<span class="fn">getFlags</span>()</div>
+          <p class="method-desc">Returns the flags for this drop.</p>
+          <pre class="method-code"><code><span class="kw">local</span> flags = drop:getFlags()
+<span class="kw">print</span>("flags:", flags)</code></pre>
+        </div>
+    </section>
+    </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" style="font-family:var(--font-display);">Browse</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-G">G<span class="n">6</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="active" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container d-flex flex-wrap justify-content-between gap-2">
+    <span>GTPS.Host &mdash; unofficial Lua API reference</span>
+    <span>generated from source docs &middot; last updated 2026-06-27</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

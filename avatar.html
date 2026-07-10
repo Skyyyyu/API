@@ -1,0 +1,1591 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avatar &middot; GTPS.Host Lua API</title>
+<meta name="description" content="The player's full avatar/account object — currency, inventory, stats, social &amp; moderation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg gtps-navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <svg class="gtps-logo" width="30" height="30" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="#a9db4d" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="4,9.5 16,16 16,28.5 4,22" fill="#6f9a2a" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,16 28,9.5 28,22 16,28.5" fill="#c97a2e" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="url(#gtpsSheen)" opacity="0.5"/>
+        <defs>
+          <linearGradient id="gtpsSheen" x1="4" y1="3" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      GTPS.Host <span style="color:var(--text-faint);font-weight:400;">/ Lua API</span>
+    </a>
+    <div class="d-flex align-items-center order-lg-3 gap-2">
+      <a class="btn-discord-nav d-none d-sm-inline-flex" href="https://discord.gg/gtpshost" target="_blank" rel="noopener" aria-label="Join the GTPS.Host Discord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse order-lg-2" id="mainNav">
+      <ul class="navbar-nav ms-auto flex-wrap">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">World & Tiles</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="world.html">World</a></li><li><a class="dropdown-item" href="tile.html">Tile</a></li><li><a class="dropdown-item" href="drop.html">Drop</a></li><li><a class="dropdown-item" href="iotm.html">IOTM</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items & Shop</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="item.html">Item</a></li><li><a class="dropdown-item" href="shopitem.html">ShopItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rendering</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="texture.html">Texture</a></li><li><a class="dropdown-item" href="sprite.html">Sprite</a></li><li><a class="dropdown-item" href="rendertexture.html">RenderTexture</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Avatar & Player</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item active" href="avatar.html">Avatar</a></li><li><a class="dropdown-item" href="avatarplayerautofarm.html">AvatarPlayerAutofarm</a></li><li><a class="dropdown-item" href="avatarplayerinventoryitem.html">AvatarPlayerInventoryItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Discord Integration</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="discordbot.html">DiscordBot</a></li><li><a class="dropdown-item" href="discordslashcommandevent.html">DiscordSlashCommandEvent</a></li><li><a class="dropdown-item" href="discordbuttonclickevent.html">DiscordButtonClickEvent</a></li><li><a class="dropdown-item" href="discordformsubmitevent.html">DiscordFormSubmitEvent</a></li><li><a class="dropdown-item" href="discordmessagecreateevent.html">DiscordMessageCreateEvent</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="callbacks.html">Callbacks</a></li></ul>
+        </li>
+      </ul>
+      <a class="btn-discord-nav d-sm-none mt-2" href="https://discord.gg/gtpshost" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container docs-shell" style="padding-top:5.5rem;">
+  <div class="row">
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="docs-sidebar">
+        
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-A">A<span class="n">15</span></a></li><li><a href="#grp-B">B<span class="n">1</span></a></li><li><a href="#grp-C">C<span class="n">4</span></a></li><li><a href="#grp-D">D<span class="n">4</span></a></li><li><a href="#grp-E">E<span class="n">2</span></a></li><li><a href="#grp-G">G<span class="n">83</span></a></li><li><a href="#grp-H">H<span class="n">6</span></a></li><li><a href="#grp-I">I<span class="n">3</span></a></li><li><a href="#grp-L">L<span class="n">1</span></a></li><li><a href="#grp-O">O<span class="n">32</span></a></li><li><a href="#grp-P">P<span class="n">3</span></a></li><li><a href="#grp-R">R<span class="n">14</span></a></li><li><a href="#grp-S">S<span class="n">34</span></a></li><li><a href="#grp-U">U<span class="n">3</span></a></li><li><a href="#grp-V">V<span class="n">2</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="active" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <button class="btn btn-outline-light btn-sm d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+        &#9776; Browse &middot; jump to section or object
+      </button>
+
+      <h1 class="class-heading"><span class="slot" style="background:linear-gradient(135deg,#ff6b9d,#ff6b9ddd);width:38px;height:38px;font-size:.95rem;border-radius:7px;">Av</span>Avatar</h1>
+      <p class="class-sub">The player's full avatar/account object — currency, inventory, stats, social &amp; moderation.</p>
+      <span class="method-count-pill"><span class="dot"></span>207 methods documented</span>
+
+      <div class="search-wrap mt-4">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="docs-search" id="docsSearch" placeholder="Filter Avatar&hellip; e.g. a name or keyword">
+      </div>
+      <div class="search-empty" id="searchEmpty">No entries match that search.</div>
+
+      
+    <section class="letter-group" id="grp-A">
+      <h2 class="letter-group-title"><span class="tag">A</span>A &middot; 15 methods</h2>
+      
+        <div class="method-card" id="avatar-addactivetitle-title-id" data-search="avatar:addactivetitle(title_id) adds an active title to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addActiveTitle</span>(title_id)</div>
+          <p class="method-desc">Adds an active title to the avatar.</p>
+          <pre class="method-code"><code>player:addActiveTitle(5)  -- Add title ID 5 as active</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addbankbalance-balance" data-search="avatar:addbankbalance(balance) adds balance to the avatar's bank account.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addBankBalance</span>(balance)</div>
+          <p class="method-desc">Adds balance to the avatar's bank account.</p>
+          <pre class="method-code"><code>player:addBankBalance(100)  -- Add 100 World Locks to bank</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addblessing-blessingid" data-search="avatar:addblessing(blessingid) adds a blessing to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addBlessing</span>(blessingID)</div>
+          <p class="method-desc">Adds a blessing to the avatar.</p>
+          <pre class="method-code"><code>player:addBlessing(1)  -- Add blessing ID 1</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addcoins-coins" data-search="avatar:addcoins(coins) adds coins to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addCoins</span>(coins)</div>
+          <p class="method-desc">Adds coins to the avatar.</p>
+          <pre class="method-code"><code>player:addCoins(1000)  -- Add 1000 coins</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addfriend-second-player" data-search="avatar:addfriend(second_player) adds a friend to the avatar's friend list (bidirectional).">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addFriend</span>(second_player)</div>
+          <p class="method-desc">Adds a friend to the avatar's friend list (bidirectional).</p>
+          <pre class="method-code"><code><span class="kw">local</span> target = getPlayer(123)
+player:addFriend(target)  -- Add target as friend</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addgems-gems-instantset-progressquests" data-search="avatar:addgems(gems, instantset, progressquests) adds gems to the avatar and updates the display.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addGems</span>(gems, instantSet, progressQuests)</div>
+          <p class="method-desc">Adds gems to the avatar and updates the display.</p>
+          <pre class="method-code"><code>player:addGems(500, 1, 1)  -- Add 500 gems, instant update, progress quests</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addgrowpasspoints-points" data-search="avatar:addgrowpasspoints(points) adds growpass points to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addGrowpassPoints</span>(points)</div>
+          <p class="method-desc">Adds Growpass points to the avatar.</p>
+          <pre class="method-code"><code>player:addGrowpassPoints(100)  -- Add 100 Growpass points</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addlevel-level" data-search="avatar:addlevel(level) adds levels to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addLevel</span>(level)</div>
+          <p class="method-desc">Adds levels to the avatar.</p>
+          <pre class="method-code"><code>player:addLevel(5)  -- Add 5 levels</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addmail" data-search="avatar:addmail() adds mail to the avatar's mailbox.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addMail</span>()</div>
+          <p class="method-desc">Adds mail to the avatar's mailbox.</p>
+          <pre class="method-code"><code>player:addMail({
+    sender = "System",
+    subject = "Welcome!",
+    content = "Hello and welcome to the server!"
+})</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addmod-modid-value" data-search="avatar:addmod(modid, value) adds a mod to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addMod</span>(modID, value)</div>
+          <p class="method-desc">Adds a mod to the avatar.</p>
+          <pre class="method-code"><code>player:addMod(-77, 60)  -- Add Vanish mod for 60 seconds</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addnote-note" data-search="avatar:addnote(note) adds a staff note to the avatar's account.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addNote</span>(note)</div>
+          <p class="method-desc">Adds a staff note to the avatar's account.</p>
+          <pre class="method-code"><code>player:addNote("Suspicious activity detected")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addplaytime-time" data-search="avatar:addplaytime(time) adds playtime to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addPlaytime</span>(time)</div>
+          <p class="method-desc">Adds playtime to the avatar.</p>
+          <pre class="method-code"><code>player:addPlaytime(3600)  -- Add 1 hour of playtime</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addsubscription-type-exp" data-search="avatar:addsubscription(type, exp) adds a subscription to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addSubscription</span>(Type, exp)</div>
+          <p class="method-desc">Adds a subscription to the avatar.</p>
+          <pre class="method-code"><code>player:addSubscription(1, os.time() + 86400)  -- Add Super Supporter for 1 day</code></pre>
+        </div>
+        <div class="method-card" id="avatar-addtitle-title-id" data-search="avatar:addtitle(title_id) adds a title to the avatar's collection.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">addTitle</span>(title_id)</div>
+          <p class="method-desc">Adds a title to the avatar's collection.</p>
+          <pre class="method-code"><code>player:addTitle(10)  -- Add title ID 10</code></pre>
+        </div>
+        <div class="method-card" id="avatar-adjustblockhitcount-adjust" data-search="avatar:adjustblockhitcount(adjust) adjusts the block hit count for the avatar (-10 to +10).">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">adjustBlockHitCount</span>(adjust)</div>
+          <p class="method-desc">Adjusts the block hit count for the avatar (-10 to +10).</p>
+          <pre class="method-code"><code>player:adjustBlockHitCount(-10)  -- All blocks break in 1 hit</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-B">
+      <h2 class="letter-group-title"><span class="tag">B</span>B &middot; 1 method</h2>
+      
+        <div class="method-card" id="avatar-ban-modduration-reason-punishedby-bandevice-banip" data-search="avatar:ban(modduration, reason, punishedby, bandevice, banip) bans the avatar from the server.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">ban</span>(modDuration, reason, punishedBy, banDevice, banIP)</div>
+          <p class="method-desc">Bans the avatar from the server.</p>
+          <pre class="method-code"><code>player:ban(86400, "Hacking", "Admin", 1, 1)  -- Ban for 24 hours</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-C">
+      <h2 class="letter-group-title"><span class="tag">C</span>C &middot; 4 methods</h2>
+      
+        <div class="method-card" id="avatar-canfit" data-search="avatar:canfit() checks whether the avatar can fit into a world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">canFit</span>()</div>
+          <p class="method-desc">Checks whether the avatar can fit into a world.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:canFit() <span class="kw">then</span>
+    <span class="kw">print</span>("Player can fit in the world")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-changeitem-itemid-itemcount-addbackpack" data-search="avatar:changeitem(itemid, itemcount, addbackpack) changes the item amount for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">changeItem</span>(itemID, itemCount, addBackpack)</div>
+          <p class="method-desc">Changes the item amount for the avatar.</p>
+          <pre class="method-code"><code>player:changeItem(242, 10, 0)   -- Add 10 World Locks to inventory
+player:changeItem(242, -5, 1)   -- Remove 5 World Locks from backpack</code></pre>
+        </div>
+        <div class="method-card" id="avatar-checkpassword-password" data-search="avatar:checkpassword(password) checks if the provided password matches the avatar's password.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">checkPassword</span>(password)</div>
+          <p class="method-desc">Checks if the provided password matches the avatar's password.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:checkPassword("myPassword123") <span class="kw">then</span>
+    <span class="kw">print</span>("Password correct!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-clearmailbox" data-search="avatar:clearmailbox() clears all mail from the avatar's mailbox.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">clearMailbox</span>()</div>
+          <p class="method-desc">Clears all mail from the avatar's mailbox.</p>
+          <pre class="method-code"><code>player:clearMailbox()  -- Delete all mail</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-D">
+      <h2 class="letter-group-title"><span class="tag">D</span>D &middot; 4 methods</h2>
+      
+        <div class="method-card" id="avatar-deleteeffects" data-search="avatar:deleteeffects() deletes all effects from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">deleteEffects</span>()</div>
+          <p class="method-desc">Deletes all effects from the avatar.</p>
+          <pre class="method-code"><code>player:deleteEffects()  -- Remove all effects</code></pre>
+        </div>
+        <div class="method-card" id="avatar-disconnect" data-search="avatar:disconnect() disconnects the avatar from the server.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">disconnect</span>()</div>
+          <p class="method-desc">Disconnects the avatar from the server.</p>
+          <pre class="method-code"><code>player:disconnect()  -- Force disconnect player</code></pre>
+        </div>
+        <div class="method-card" id="avatar-doaction-str" data-search="avatar:doaction(str) sends an action on behalf of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">doAction</span>(str)</div>
+          <p class="method-desc">Sends an action on behalf of the avatar.</p>
+          <pre class="method-code"><code>player:doAction("action|play_sfx\nfile|audio/coin.wav\ndelayMS|0")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-dorawpacket-data" data-search="avatar:dorawpacket(data) sends a raw packet on behalf of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">doRawPacket</span>(data)</div>
+          <p class="method-desc">Sends a raw packet on behalf of the avatar.</p>
+          <pre class="method-code"><code>player:doRawPacket("action|input\n|text|Hello")</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-E">
+      <h2 class="letter-group-title"><span class="tag">E</span>E &middot; 2 methods</h2>
+      
+        <div class="method-card" id="avatar-earnachievement-type" data-search="avatar:earnachievement(type) awards an achievement to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">earnAchievement</span>(type)</div>
+          <p class="method-desc">Awards an achievement to the avatar.</p>
+          <pre class="method-code"><code>player:earnAchievement(250)  -- Earn achievement ID 250</code></pre>
+        </div>
+        <div class="method-card" id="avatar-enterworld-worldname-notification-optional-bypass" data-search="avatar:enterworld(worldname, notification, optional - bypass) moves the avatar to another world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">enterWorld</span>(worldName, notification, optional - bypass)</div>
+          <p class="method-desc">Moves the avatar to another world.</p>
+          <pre class="method-code"><code>player:enterWorld("START", "Teleporting...", 0)  -- Enter world START</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-G">
+      <h2 class="letter-group-title"><span class="tag">G</span>G &middot; 83 methods</h2>
+      
+        <div class="method-card" id="avatar-getaccessworlds" data-search="avatar:getaccessworlds() returns the worlds the avatar has access to.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAccessWorlds</span>()</div>
+          <p class="method-desc">Returns the worlds the avatar has access to.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worlds = player:getAccessWorlds()
+for _, worldID in ipairs(worlds) do
+    <span class="kw">print</span>("Access to world:", worldID)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getaccountcreationdatestr" data-search="avatar:getaccountcreationdatestr() returns the account creation date as a formatted string.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAccountCreationDateStr</span>()</div>
+          <p class="method-desc">Returns the account creation date as a formatted string.</p>
+          <pre class="method-code"><code><span class="kw">local</span> date = player:getAccountCreationDateStr()
+<span class="kw">print</span>("Account created:", date)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getaccountcreationtime" data-search="avatar:getaccountcreationtime() returns the account creation time as a unix timestamp.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAccountCreationTime</span>()</div>
+          <p class="method-desc">Returns the account creation time as a UNIX timestamp.</p>
+          <pre class="method-code"><code><span class="kw">local</span> time = player:getAccountCreationTime()
+<span class="kw">print</span>("Created at:", os.date("%Y-%m-%d", time))</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getachievements" data-search="avatar:getachievements() returns the achievements earned by the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAchievements</span>()</div>
+          <p class="method-desc">Returns the achievements earned by the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> achievements = player:getAchievements()
+for _, ach in ipairs(achievements) do
+    <span class="kw">print</span>(ach.id, ach.name, ach.timestamp)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getactivepet" data-search="avatar:getactivepet() returns the active pet of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getActivePet</span>()</div>
+          <p class="method-desc">Returns the active pet of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> pet = player:getActivePet()
+<span class="kw">if</span> pet <span class="kw">then</span>
+    <span class="kw">print</span>("Active pet:", pet)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getactivetitles" data-search="avatar:getactivetitles() returns the active titles of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getActiveTitles</span>()</div>
+          <p class="method-desc">Returns the active titles of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> titles = player:getActiveTitles()
+for _, title in ipairs(titles) do
+    <span class="kw">print</span>("Active title:", title)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getadjustedblockhitcount" data-search="avatar:getadjustedblockhitcount() returns the adjusted block hit count.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAdjustedBlockHitCount</span>()</div>
+          <p class="method-desc">Returns the adjusted block hit count.</p>
+          <pre class="method-code"><code><span class="kw">local</span> adjustment = player:getAdjustedBlockHitCount()
+<span class="kw">print</span>("Block hit adjustment:", adjustment)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getaltaccounts" data-search="avatar:getaltaccounts() returns the alt accounts of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAltAccounts</span>()</div>
+          <p class="method-desc">Returns the alt accounts of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> alts = player:getAltAccounts()
+for _, alt in ipairs(alts) do
+    <span class="kw">print</span>("Alt account:", alt:getRealCleanName())
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getautofarm" data-search="avatar:getautofarm() returns the autofarm object for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getAutofarm</span>()</div>
+          <p class="method-desc">Returns the autofarm object for the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> autofarm = player:getAutofarm()
+<span class="kw">print</span>("Autofarm active:", autofarm:isActive())</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getbackpackitems" data-search="avatar:getbackpackitems() returns the backpack items of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getBackpackItems</span>()</div>
+          <p class="method-desc">Returns the backpack items of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> items = player:getBackpackItems()
+for _, item in ipairs(items) do
+    <span class="kw">print</span>("Backpack item:", item.id, "x", item.amount)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getbackpackusedsize" data-search="avatar:getbackpackusedsize() returns the used backpack size.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getBackpackUsedSize</span>()</div>
+          <p class="method-desc">Returns the used backpack size.</p>
+          <pre class="method-code"><code><span class="kw">local</span> used = player:getBackpackUsedSize()
+<span class="kw">print</span>("Backpack used:", used)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getbankbalance" data-search="avatar:getbankbalance() returns the bank balance of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getBankBalance</span>()</div>
+          <p class="method-desc">Returns the bank balance of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> balance = player:getBankBalance()
+<span class="kw">print</span>("Bank balance:", balance, "WL")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getbiweeklyquests" data-search="avatar:getbiweeklyquests() returns the biweekly quests of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getBiweeklyQuests</span>()</div>
+          <p class="method-desc">Returns the biweekly quests of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> quests = player:getBiweeklyQuests()
+for _, quest in ipairs(quests) do
+    <span class="kw">print</span>("Quest:", quest.taskID, quest.taskCompletedValue)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getblockposx" data-search="avatar:getblockposx() returns the block position x of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getBlockPosX</span>()</div>
+          <p class="method-desc">Returns the block position X of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> x = player:getBlockPosX()
+<span class="kw">print</span>("Block X:", x)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getblockposy" data-search="avatar:getblockposy() returns the block position y of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getBlockPosY</span>()</div>
+          <p class="method-desc">Returns the block position Y of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> y = player:getBlockPosY()
+<span class="kw">print</span>("Block Y:", y)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getcardbattleinfo" data-search="avatar:getcardbattleinfo() returns the card battle info of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getCardBattleInfo</span>()</div>
+          <p class="method-desc">Returns the card battle info of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> info = player:getCardBattleInfo()
+<span class="kw">print</span>("Card battle info:", info)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getclassicprofilecontent-cattype-flags" data-search="avatar:getclassicprofilecontent(cattype, flags) returns the classic profile content of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getClassicProfileContent</span>(catType, flags)</div>
+          <p class="method-desc">Returns the classic profile content of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> content = player:getClassicProfileContent(0, 0)
+<span class="kw">print</span>("Profile content:", content)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getcleanname" data-search="avatar:getcleanname() returns the clean name (no formatting) of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getCleanName</span>()</div>
+          <p class="method-desc">Returns the clean name (no formatting) of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> name = player:getCleanName()
+<span class="kw">print</span>("Clean name:", name)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getclothingitemid-index" data-search="avatar:getclothingitemid(index) returns the clothing item id at the specified slot.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getClothingItemID</span>(index)</div>
+          <p class="method-desc">Returns the clothing item ID at the specified slot.</p>
+          <pre class="method-code"><code><span class="kw">local</span> hat = player:getClothingItemID(0)  -- Get hat slot
+<span class="kw">print</span>("Hat item ID:", hat)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getcoins" data-search="avatar:getcoins() returns the coins of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getCoins</span>()</div>
+          <p class="method-desc">Returns the coins of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> coins = player:getCoins()
+<span class="kw">print</span>("Coins:", coins)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getcountry" data-search="avatar:getcountry() returns the country code of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getCountry</span>()</div>
+          <p class="method-desc">Returns the country code of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> country = player:getCountry()
+<span class="kw">print</span>("Country:", country)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getcountryflagbackground" data-search="avatar:getcountryflagbackground() returns the country flag background item id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getCountryFlagBackground</span>()</div>
+          <p class="method-desc">Returns the country flag background item ID.</p>
+          <pre class="method-code"><code><span class="kw">local</span> bg = player:getCountryFlagBackground()
+<span class="kw">print</span>("Flag background:", bg)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getcountryflagforeground" data-search="avatar:getcountryflagforeground() returns the country flag foreground item id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getCountryFlagForeground</span>()</div>
+          <p class="method-desc">Returns the country flag foreground item ID.</p>
+          <pre class="method-code"><code><span class="kw">local</span> fg = player:getCountryFlagForeground()
+<span class="kw">print</span>("Flag foreground:", fg)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getdiscordid" data-search="avatar:getdiscordid() returns the discord id linked to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getDiscordID</span>()</div>
+          <p class="method-desc">Returns the Discord ID linked to the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> discordID = player:getDiscordID()
+<span class="kw">print</span>("Discord ID:", discordID)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getdiscordinvites" data-search="avatar:getdiscordinvites() returns the discord invites count.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getDiscordInvites</span>()</div>
+          <p class="method-desc">Returns the Discord invites count.</p>
+          <pre class="method-code"><code><span class="kw">local</span> invites = player:getDiscordInvites()
+<span class="kw">print</span>("Discord invites:", invites)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getdungeonscrolls" data-search="avatar:getdungeonscrolls() returns the dungeon scrolls count.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getDungeonScrolls</span>()</div>
+          <p class="method-desc">Returns the dungeon scrolls count.</p>
+          <pre class="method-code"><code><span class="kw">local</span> scrolls = player:getDungeonScrolls()
+<span class="kw">print</span>("Dungeon scrolls:", scrolls)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-geteffects" data-search="avatar:geteffects() returns the effects of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getEffects</span>()</div>
+          <p class="method-desc">Returns the effects of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> effects = player:getEffects()
+<span class="kw">print</span>("Effects:", effects)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getemail" data-search="avatar:getemail() returns the email of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getEmail</span>()</div>
+          <p class="method-desc">Returns the email of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> email = player:getEmail()
+<span class="kw">print</span>("Email:", email)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getfriends" data-search="avatar:getfriends() returns the friend list of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getFriends</span>()</div>
+          <p class="method-desc">Returns the friend list of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> friends = player:getFriends()
+for _, friendID in ipairs(friends) do
+    <span class="kw">print</span>("Friend UID:", friendID)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getgameversion" data-search="avatar:getgameversion() returns the game version of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getGameVersion</span>()</div>
+          <p class="method-desc">Returns the game version of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> version = player:getGameVersion()
+<span class="kw">print</span>("Game version:", version)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getgems" data-search="avatar:getgems() returns the gems of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getGems</span>()</div>
+          <p class="method-desc">Returns the gems of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> gems = player:getGems()
+<span class="kw">print</span>("Gems:", gems)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getgender" data-search="avatar:getgender() returns the gender of the avatar (0=male, 1=female).">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getGender</span>()</div>
+          <p class="method-desc">Returns the gender of the avatar (0=Male, 1=Female).</p>
+          <pre class="method-code"><code><span class="kw">local</span> gender = player:getGender()
+<span class="kw">print</span>("Gender:", gender == 0 and "Male" or "Female")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getgrowpasspoints" data-search="avatar:getgrowpasspoints() returns the growpass points of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getGrowpassPoints</span>()</div>
+          <p class="method-desc">Returns the Growpass points of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> points = player:getGrowpassPoints()
+<span class="kw">print</span>("Growpass points:", points)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getguildid" data-search="avatar:getguildid() returns the guild id of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getGuildID</span>()</div>
+          <p class="method-desc">Returns the guild ID of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> guildID = player:getGuildID()
+<span class="kw">print</span>("Guild ID:", guildID)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-gethomeworldid" data-search="avatar:gethomeworldid() returns the home world id of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getHomeWorldID</span>()</div>
+          <p class="method-desc">Returns the home world ID of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> home = player:getHomeWorldID()
+<span class="kw">print</span>("Home world ID:", home)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getinventoryitems" data-search="avatar:getinventoryitems() returns the inventory items of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getInventoryItems</span>()</div>
+          <p class="method-desc">Returns the inventory items of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> items = player:getInventoryItems()
+for _, item in ipairs(items) do
+    <span class="kw">print</span>("Item:", item:getItemID(), "x", item:getItemCount())
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getinventorysize" data-search="avatar:getinventorysize() returns the inventory size of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getInventorySize</span>()</div>
+          <p class="method-desc">Returns the inventory size of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> size = player:getInventorySize()
+<span class="kw">print</span>("Inventory size:", size)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getip" data-search="avatar:getip() returns the ip address of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getIP</span>()</div>
+          <p class="method-desc">Returns the IP address of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> ip = player:getIP()
+<span class="kw">print</span>("IP:", ip)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getiphistory" data-search="avatar:getiphistory() returns the ip history of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getIPHistory</span>()</div>
+          <p class="method-desc">Returns the IP history of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> history = player:getIPHistory()
+for _, ip in ipairs(history) do
+    <span class="kw">print</span>("IP:", ip)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getitemamount-itemid" data-search="avatar:getitemamount(itemid) returns the amount of a specific item in the inventory.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getItemAmount</span>(itemID)</div>
+          <p class="method-desc">Returns the amount of a specific item in the inventory.</p>
+          <pre class="method-code"><code><span class="kw">local</span> wl = player:getItemAmount(242)
+<span class="kw">print</span>("World Locks:", wl)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getitemamountbackpack-itemid" data-search="avatar:getitemamountbackpack(itemid) returns the amount of a specific item in the backpack.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getItemAmountBackpack</span>(itemID)</div>
+          <p class="method-desc">Returns the amount of a specific item in the backpack.</p>
+          <pre class="method-code"><code><span class="kw">local</span> wl = player:getItemAmountBackpack(242)
+<span class="kw">print</span>("World Locks in backpack:", wl)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getitemeffects" data-search="avatar:getitemeffects() returns the combined item effects from clothing.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getItemEffects</span>()</div>
+          <p class="method-desc">Returns the combined item effects from clothing.</p>
+          <pre class="method-code"><code><span class="kw">local</span> effects = player:getItemEffects()
+<span class="kw">print</span>("Extra gems:", effects.extra_gems)
+<span class="kw">print</span>("Extra XP:", effects.extra_xp)
+<span class="kw">print</span>("One-hit:", effects.one_hit)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getlastonline" data-search="avatar:getlastonline() returns the last online time of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getLastOnline</span>()</div>
+          <p class="method-desc">Returns the last online time of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> last = player:getLastOnline()
+<span class="kw">print</span>("Last online:", os.date("%Y-%m-%d %H:%M:%S", last))</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getlevel" data-search="avatar:getlevel() returns the level of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getLevel</span>()</div>
+          <p class="method-desc">Returns the level of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> level = player:getLevel()
+<span class="kw">print</span>("Level:", level)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getlifegoals" data-search="avatar:getlifegoals() returns the life goals of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getLifeGoals</span>()</div>
+          <p class="method-desc">Returns the life goals of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> goals = player:getLifeGoals()
+for _, goal in ipairs(goals) do
+    <span class="kw">print</span>("Goal:", goal.taskID)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getmiddleposx" data-search="avatar:getmiddleposx() returns the middle position x of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getMiddlePosX</span>()</div>
+          <p class="method-desc">Returns the middle position X of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> x = player:getMiddlePosX()
+<span class="kw">print</span>("Middle X:", x)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getmiddleposy" data-search="avatar:getmiddleposy() returns the middle position y of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getMiddlePosY</span>()</div>
+          <p class="method-desc">Returns the middle position Y of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> y = player:getMiddlePosY()
+<span class="kw">print</span>("Middle Y:", y)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getmod-modid" data-search="avatar:getmod(modid) returns the mod of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getMod</span>(modID)</div>
+          <p class="method-desc">Returns the mod of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> mod = player:getMod(-77)
+<span class="kw">print</span>("Vanish mod:", mod)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getmods" data-search="avatar:getmods() returns all mods of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getMods</span>()</div>
+          <p class="method-desc">Returns all mods of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> mods = player:getMods()
+for _, mod in ipairs(mods) do
+    <span class="kw">print</span>("Mod:", mod)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getname" data-search="avatar:getname() returns the name (with formatting) of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getName</span>()</div>
+          <p class="method-desc">Returns the name (with formatting) of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> name = player:getName()
+<span class="kw">print</span>("Display name:", name)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getnetid" data-search="avatar:getnetid() returns the network id of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getNetID</span>()</div>
+          <p class="method-desc">Returns the network ID of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> netID = player:getNetID()
+<span class="kw">print</span>("Net ID:", netID)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getonlinestatus" data-search="avatar:getonlinestatus() returns the online status of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getOnlineStatus</span>()</div>
+          <p class="method-desc">Returns the online status of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> status = player:getOnlineStatus()
+<span class="kw">print</span>("Online status:", status)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getownedworlds" data-search="avatar:getownedworlds() returns the worlds owned by the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getOwnedWorlds</span>()</div>
+          <p class="method-desc">Returns the worlds owned by the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worlds = player:getOwnedWorlds()
+for _, worldID in ipairs(worlds) do
+    <span class="kw">print</span>("Owned world:", worldID)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getownerrole" data-search="avatar:getownerrole() returns the owner role of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getOwnerRole</span>()</div>
+          <p class="method-desc">Returns the owner role of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> role = player:getOwnerRole()
+<span class="kw">print</span>("Owner role:", role)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getping" data-search="avatar:getping() returns the ping of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getPing</span>()</div>
+          <p class="method-desc">Returns the ping of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> ping = player:getPing()
+<span class="kw">print</span>("Ping:", ping, "ms")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getplatform" data-search="avatar:getplatform() returns the platform of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getPlatform</span>()</div>
+          <p class="method-desc">Returns the platform of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> platform = player:getPlatform()
+<span class="kw">print</span>("Platform:", platform)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getplaytime" data-search="avatar:getplaytime() returns the playtime of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getPlaytime</span>()</div>
+          <p class="method-desc">Returns the playtime of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> playtime = player:getPlaytime()
+<span class="kw">print</span>("Playtime:", playtime, "seconds")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getposx" data-search="avatar:getposx() returns the position x of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getPosX</span>()</div>
+          <p class="method-desc">Returns the position X of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> x = player:getPosX()
+<span class="kw">print</span>("X position:", x)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getposy" data-search="avatar:getposy() returns the position y of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getPosY</span>()</div>
+          <p class="method-desc">Returns the position Y of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> y = player:getPosY()
+<span class="kw">print</span>("Y position:", y)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getprofileaccessbutton" data-search="avatar:getprofileaccessbutton() returns the profile access button.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getProfileAccessButton</span>()</div>
+          <p class="method-desc">Returns the profile access button.</p>
+          <pre class="method-code"><code><span class="kw">local</span> button = player:getProfileAccessButton()
+<span class="kw">print</span>("Profile access button:", button)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getprofileguildinfo" data-search="avatar:getprofileguildinfo() returns the profile guild info.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getProfileGuildInfo</span>()</div>
+          <p class="method-desc">Returns the profile guild info.</p>
+          <pre class="method-code"><code><span class="kw">local</span> info = player:getProfileGuildInfo()
+<span class="kw">print</span>("Profile guild info:", info)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getprofileguildjoinbutton" data-search="avatar:getprofileguildjoinbutton() returns the profile guild join button.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getProfileGuildJoinButton</span>()</div>
+          <p class="method-desc">Returns the profile guild join button.</p>
+          <pre class="method-code"><code><span class="kw">local</span> button = player:getProfileGuildJoinButton()
+<span class="kw">print</span>("Profile guild join button:", button)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrealcleanname" data-search="avatar:getrealcleanname() returns the real clean name (no formatting, no nick) of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRealCleanName</span>()</div>
+          <p class="method-desc">Returns the real clean name (no formatting, no nick) of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> realName = player:getRealCleanName()
+<span class="kw">print</span>("Real clean name:", realName)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrealname" data-search="avatar:getrealname() returns the real name (no nick) of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRealName</span>()</div>
+          <p class="method-desc">Returns the real name (no nick) of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> realName = player:getRealName()
+<span class="kw">print</span>("Real name:", realName)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrecentworlds" data-search="avatar:getrecentworlds() returns the recent worlds visited by the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRecentWorlds</span>()</div>
+          <p class="method-desc">Returns the recent worlds visited by the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worlds = player:getRecentWorlds()
+for _, worldID in ipairs(worlds) do
+    <span class="kw">print</span>("Recent world:", worldID)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrequiredxp" data-search="avatar:getrequiredxp() returns the required xp for the next level.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRequiredXP</span>()</div>
+          <p class="method-desc">Returns the required XP for the next level.</p>
+          <pre class="method-code"><code><span class="kw">local</span> xp = player:getRequiredXP()
+<span class="kw">print</span>("Required XP:", xp)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrid" data-search="avatar:getrid() returns the rid of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRID</span>()</div>
+          <p class="method-desc">Returns the RID of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> rid = player:getRID()
+<span class="kw">print</span>("RID:", rid)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getridhistory" data-search="avatar:getridhistory() returns the rid history of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRIDHistory</span>()</div>
+          <p class="method-desc">Returns the RID history of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> history = player:getRIDHistory()
+for _, rid in ipairs(history) do
+    <span class="kw">print</span>("RID:", rid)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrole" data-search="avatar:getrole() returns the role of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRole</span>()</div>
+          <p class="method-desc">Returns the role of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> role = player:getRole()
+<span class="kw">print</span>("Role:", role.roleName)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getrolequestlevel-type" data-search="avatar:getrolequestlevel(type) returns the role quest level of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getRoleQuestLevel</span>(type)</div>
+          <p class="method-desc">Returns the role quest level of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> level = player:getRoleQuestLevel(0)
+<span class="kw">print</span>("Role quest level:", level)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getsmalllockedworlds" data-search="avatar:getsmalllockedworlds() returns the small locked worlds of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getSmallLockedWorlds</span>()</div>
+          <p class="method-desc">Returns the small locked worlds of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worlds = player:getSmallLockedWorlds()
+for _, worldID in ipairs(worlds) do
+    <span class="kw">print</span>("Small locked world:", worldID)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getstats-stattype" data-search="avatar:getstats(stattype) returns a specific stat of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getStats</span>(statType)</div>
+          <p class="method-desc">Returns a specific stat of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> surgeries = player:getStats(21)  -- Surgery stat
+<span class="kw">print</span>("Surgeries:", surgeries)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getsubscription-subtype" data-search="avatar:getsubscription(subtype) returns the subscription of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getSubscription</span>(subType)</div>
+          <p class="method-desc">Returns the subscription of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> sub = player:getSubscription(1)  -- Super Supporter
+<span class="kw">if</span> sub <span class="kw">then</span>
+    <span class="kw">print</span>("Expires:", sub:getExpireTime())
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getsubscriptioninfo" data-search="avatar:getsubscriptioninfo() returns the subscription info of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getSubscriptionInfo</span>()</div>
+          <p class="method-desc">Returns the subscription info of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> info = player:getSubscriptionInfo()
+<span class="kw">print</span>("Subscription info:", info)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-gettitles" data-search="avatar:gettitles() returns all titles of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getTitles</span>()</div>
+          <p class="method-desc">Returns all titles of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> titles = player:getTitles()
+for _, title in ipairs(titles) do
+    <span class="kw">print</span>("Title:", title.titleName)
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-gettotalworldlocks" data-search="avatar:gettotalworldlocks() returns the total world locks of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getTotalWorldLocks</span>()</div>
+          <p class="method-desc">Returns the total world locks of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> total = player:getTotalWorldLocks()
+<span class="kw">print</span>("Total world locks:", total)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-gettransformprofilebuttons" data-search="avatar:gettransformprofilebuttons() returns the transform profile buttons.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getTransformProfileButtons</span>()</div>
+          <p class="method-desc">Returns the transform profile buttons.</p>
+          <pre class="method-code"><code><span class="kw">local</span> buttons = player:getTransformProfileButtons()
+<span class="kw">print</span>("Transform profile buttons:", buttons)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-gettype" data-search="avatar:gettype() returns the type of the avatar (0=player, 25=lua npc).">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getType</span>()</div>
+          <p class="method-desc">Returns the type of the avatar (0=player, 25=Lua NPC).</p>
+          <pre class="method-code"><code><span class="kw">local</span> type = player:getType()
+<span class="kw">print</span>("Type:", type)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getunlockedachievementscount" data-search="avatar:getunlockedachievementscount() returns the unlocked achievements count.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getUnlockedAchievementsCount</span>()</div>
+          <p class="method-desc">Returns the unlocked achievements count.</p>
+          <pre class="method-code"><code><span class="kw">local</span> count = player:getUnlockedAchievementsCount()
+<span class="kw">print</span>("Unlocked achievements:", count)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getuserid" data-search="avatar:getuserid() returns the user id of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getUserID</span>()</div>
+          <p class="method-desc">Returns the user ID of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> uid = player:getUserID()
+<span class="kw">print</span>("User ID:", uid)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getworld" data-search="avatar:getworld() returns the world object of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getWorld</span>()</div>
+          <p class="method-desc">Returns the world object of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> world = player:getWorld()
+<span class="kw">if</span> world <span class="kw">then</span>
+    <span class="kw">print</span>("Current world:", world:getName())
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-getworldname" data-search="avatar:getworldname() returns the world name of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getWorldName</span>()</div>
+          <p class="method-desc">Returns the world name of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worldName = player:getWorldName()
+<span class="kw">print</span>("World name:", worldName)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-getxp" data-search="avatar:getxp() returns the xp of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">getXP</span>()</div>
+          <p class="method-desc">Returns the XP of the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> xp = player:getXP()
+<span class="kw">print</span>("XP:", xp)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-H">
+      <h2 class="letter-group-title"><span class="tag">H</span>H &middot; 6 methods</h2>
+      
+        <div class="method-card" id="avatar-hasactiveblessing-blessingid" data-search="avatar:hasactiveblessing(blessingid) checks whether the avatar has an active blessing.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">hasActiveBlessing</span>(blessingID)</div>
+          <p class="method-desc">Checks whether the avatar has an active blessing.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:hasActiveBlessing(1) <span class="kw">then</span>
+    <span class="kw">print</span>("Blessing is active!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-hasblessing-blessingid" data-search="avatar:hasblessing(blessingid) checks whether the avatar has a blessing.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">hasBlessing</span>(blessingID)</div>
+          <p class="method-desc">Checks whether the avatar has a blessing.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:hasBlessing(1) <span class="kw">then</span>
+    <span class="kw">print</span>("Has blessing!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-hasgrowid" data-search="avatar:hasgrowid() checks whether the avatar has a growid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">hasGrowID</span>()</div>
+          <p class="method-desc">Checks whether the avatar has a GrowID.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:hasGrowID() <span class="kw">then</span>
+    <span class="kw">print</span>("Has GrowID!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-hasmod-modid" data-search="avatar:hasmod(modid) checks whether the avatar has a specific mod.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">hasMod</span>(modID)</div>
+          <p class="method-desc">Checks whether the avatar has a specific mod.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:hasMod(-77) <span class="kw">then</span>
+    <span class="kw">print</span>("Player is vanished!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-hasrole-roleid" data-search="avatar:hasrole(roleid) checks whether the avatar has a specific role.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">hasRole</span>(roleID)</div>
+          <p class="method-desc">Checks whether the avatar has a specific role.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:hasRole(11) <span class="kw">then</span>
+    <span class="kw">print</span>("Player is Staff!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-hastitle-title-id" data-search="avatar:hastitle(title_id) checks whether the avatar has a specific title.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">hasTitle</span>(title_id)</div>
+          <p class="method-desc">Checks whether the avatar has a specific title.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:hasTitle(10) <span class="kw">then</span>
+    <span class="kw">print</span>("Has title ID 10!")
+<span class="kw">end</span></code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-I">
+      <h2 class="letter-group-title"><span class="tag">I</span>I &middot; 3 methods</h2>
+      
+        <div class="method-card" id="avatar-isfacingleft" data-search="avatar:isfacingleft() checks whether the avatar is facing left.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">isFacingLeft</span>()</div>
+          <p class="method-desc">Checks whether the avatar is facing left.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:isFacingLeft() <span class="kw">then</span>
+    <span class="kw">print</span>("Facing left!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-ismaxinventoryspace" data-search="avatar:ismaxinventoryspace() checks whether the avatar has max inventory space.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">isMaxInventorySpace</span>()</div>
+          <p class="method-desc">Checks whether the avatar has max inventory space.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:isMaxInventorySpace() <span class="kw">then</span>
+    <span class="kw">print</span>("Max inventory space!")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="avatar-isonline" data-search="avatar:isonline() checks whether the avatar is online.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">isOnline</span>()</div>
+          <p class="method-desc">Checks whether the avatar is online.</p>
+          <pre class="method-code"><code><span class="kw">if</span> player:isOnline() <span class="kw">then</span>
+    <span class="kw">print</span>("Player is online!")
+<span class="kw">end</span></code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-L">
+      <h2 class="letter-group-title"><span class="tag">L</span>L &middot; 1 method</h2>
+      
+        <div class="method-card" id="avatar-leaveworld" data-search="avatar:leaveworld() makes the avatar leave the current world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">leaveWorld</span>()</div>
+          <p class="method-desc">Makes the avatar leave the current world.</p>
+          <pre class="method-code"><code>player:leaveWorld()  -- Exit current world</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-O">
+      <h2 class="letter-group-title"><span class="tag">O</span>O &middot; 32 methods</h2>
+      
+        <div class="method-card" id="avatar-onachievementsui-optional-targetplayer" data-search="avatar:onachievementsui(optional - targetplayer) opens the achievements ui for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onAchievementsUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the achievements UI for the avatar.</p>
+          <pre class="method-code"><code>player:onAchievementsUI()  -- Open own achievements
+player:onAchievementsUI(targetPlayer)  -- Open target's achievements</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onaddnotification-texture-message-audio-num-optional-delay" data-search="avatar:onaddnotification(texture, message, audio, num, optional - delay) sends a notification to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onAddNotification</span>(texture, message, audio, num, optional - delay)</div>
+          <p class="method-desc">Sends a notification to the avatar.</p>
+          <pre class="method-code"><code>player:onAddNotification("interface/atomic_button.rttex", "Hello!", "audio/hub_open.wav", 0)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onbackpackui-optional-targetplayer" data-search="avatar:onbackpackui(optional - targetplayer) opens the backpack ui for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onBackpackUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the backpack UI for the avatar.</p>
+          <pre class="method-code"><code>player:onBackpackUI()  -- Open own backpack</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onbillboardui" data-search="avatar:onbillboardui() opens the billboard ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onBillboardUI</span>()</div>
+          <p class="method-desc">Opens the billboard UI.</p>
+          <pre class="method-code"><code>player:onBillboardUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onclothesui-optional-targetplayer" data-search="avatar:onclothesui(optional - targetplayer) opens the clothes ui for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onClothesUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the clothes UI for the avatar.</p>
+          <pre class="method-code"><code>player:onClothesUI(targetPlayer)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onconsolemessage-message-optional-delay" data-search="avatar:onconsolemessage(message, optional - delay) sends a console message to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onConsoleMessage</span>(message, optional - delay)</div>
+          <p class="method-desc">Sends a console message to the avatar.</p>
+          <pre class="method-code"><code>player:onConsoleMessage("`2Welcome to the server!")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ondialogrequest-message-optional-delay" data-search="avatar:ondialogrequest(message, optional - delay) sends a dialog request to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onDialogRequest</span>(message, optional - delay)</div>
+          <p class="method-desc">Sends a dialog request to the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> dialog = "set_default_color|`o\nadd_label|big|Hello!|left|\nend_dialog|hello|||"
+player:onDialogRequest(dialog)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onfavitemsui" data-search="avatar:onfavitemsui() opens the favorite items ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onFavItemsUI</span>()</div>
+          <p class="method-desc">Opens the favorite items UI.</p>
+          <pre class="method-code"><code>player:onFavItemsUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ongrow4gooddonate" data-search="avatar:ongrow4gooddonate() opens the grow4good donate ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onGrow4GoodDonate</span>()</div>
+          <p class="method-desc">Opens the Grow4Good donate UI.</p>
+          <pre class="method-code"><code>player:onGrow4GoodDonate()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ongrow4goodui" data-search="avatar:ongrow4goodui() opens the grow4good ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onGrow4GoodUI</span>()</div>
+          <p class="method-desc">Opens the Grow4Good UI.</p>
+          <pre class="method-code"><code>player:onGrow4GoodUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ongrowmojiui" data-search="avatar:ongrowmojiui() opens the growmoji ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onGrowmojiUI</span>()</div>
+          <p class="method-desc">Opens the Growmoji UI.</p>
+          <pre class="method-code"><code>player:onGrowmojiUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ongrowpassui" data-search="avatar:ongrowpassui() opens the growpass ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onGrowpassUI</span>()</div>
+          <p class="method-desc">Opens the Growpass UI.</p>
+          <pre class="method-code"><code>player:onGrowpassUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onguildnotebookui" data-search="avatar:onguildnotebookui() opens the guild notebook ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onGuildNotebookUI</span>()</div>
+          <p class="method-desc">Opens the guild notebook UI.</p>
+          <pre class="method-code"><code>player:onGuildNotebookUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onlinkdiscordui" data-search="avatar:onlinkdiscordui() opens the link discord ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onLinkDiscordUI</span>()</div>
+          <p class="method-desc">Opens the link Discord UI.</p>
+          <pre class="method-code"><code>player:onLinkDiscordUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onmentorshipui" data-search="avatar:onmentorshipui() opens the mentorship ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onMentorshipUI</span>()</div>
+          <p class="method-desc">Opens the mentorship UI.</p>
+          <pre class="method-code"><code>player:onMentorshipUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onnameiconsui-optional-targetplayer" data-search="avatar:onnameiconsui(optional - targetplayer) opens the name icons ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onNameIconsUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the name icons UI.</p>
+          <pre class="method-code"><code>player:onNameIconsUI(targetPlayer)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onnotebookui" data-search="avatar:onnotebookui() opens the notebook ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onNotebookUI</span>()</div>
+          <p class="method-desc">Opens the notebook UI.</p>
+          <pre class="method-code"><code>player:onNotebookUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ononlinestatusui" data-search="avatar:ononlinestatusui() opens the online status ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onOnlineStatusUI</span>()</div>
+          <p class="method-desc">Opens the online status UI.</p>
+          <pre class="method-code"><code>player:onOnlineStatusUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onparticleeffect-particleid-posx-posy-num-num2-optional-delay" data-search="avatar:onparticleeffect(particleid, posx, posy, num, num2, optional - delay) sends a particle effect to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onParticleEffect</span>(particleID, posX, posY, num, num2, optional - delay)</div>
+          <p class="method-desc">Sends a particle effect to the avatar.</p>
+          <pre class="method-code"><code>player:onParticleEffect(1, 100, 100, 1, 1)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onpersonalizewrenchui" data-search="avatar:onpersonalizewrenchui() opens the personalize wrench ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onPersonalizeWrenchUI</span>()</div>
+          <p class="method-desc">Opens the personalize wrench UI.</p>
+          <pre class="method-code"><code>player:onPersonalizeWrenchUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onprofileui-world-tab" data-search="avatar:onprofileui(world, tab) opens the profile ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onProfileUI</span>(world, tab)</div>
+          <p class="method-desc">Opens the profile UI.</p>
+          <pre class="method-code"><code>player:onProfileUI(player:getWorld(), 0)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onredeemmenu" data-search="avatar:onredeemmenu() opens the redeem menu.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onRedeemMenu</span>()</div>
+          <p class="method-desc">Opens the redeem menu.</p>
+          <pre class="method-code"><code>player:onRedeemMenu()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onstorepurchaseresult" data-search="avatar:onstorepurchaseresult() opens the store purchase result ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onStorePurchaseResult</span>()</div>
+          <p class="method-desc">Opens the store purchase result UI.</p>
+          <pre class="method-code"><code>player:onStorePurchaseResult()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onstorerequest-message-optional-delay" data-search="avatar:onstorerequest(message, optional - delay) sends a store request to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onStoreRequest</span>(message, optional - delay)</div>
+          <p class="method-desc">Sends a store request to the avatar.</p>
+          <pre class="method-code"><code>player:onStoreRequest("store_data")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ontalkbubble-netid-message-persistmessage-optional-delay" data-search="avatar:ontalkbubble(netid, message, persistmessage, optional - delay) sends a talk bubble to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onTalkBubble</span>(netID, message, persistMessage, optional - delay)</div>
+          <p class="method-desc">Sends a talk bubble to the avatar.</p>
+          <pre class="method-code"><code>player:onTalkBubble(player:getNetID(), "Hello!", 0)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ontextoverlay-message-optional-delay" data-search="avatar:ontextoverlay(message, optional - delay) sends a text overlay to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onTextOverlay</span>(message, optional - delay)</div>
+          <p class="method-desc">Sends a text overlay to the avatar.</p>
+          <pre class="method-code"><code>player:onTextOverlay("`2Welcome!")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ontitlesui-optional-targetplayer" data-search="avatar:ontitlesui(optional - targetplayer) opens the titles ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onTitlesUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the titles UI.</p>
+          <pre class="method-code"><code>player:onTitlesUI(targetPlayer)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ontradehistoryui-optional-targetplayer" data-search="avatar:ontradehistoryui(optional - targetplayer) opens the trade history ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onTradeHistoryUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the trade history UI.</p>
+          <pre class="method-code"><code>player:onTradeHistoryUI()  -- Own trade history</code></pre>
+        </div>
+        <div class="method-card" id="avatar-ontradescanui" data-search="avatar:ontradescanui() opens the trade scan ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onTradeScanUI</span>()</div>
+          <p class="method-desc">Opens the trade scan UI.</p>
+          <pre class="method-code"><code>player:onTradeScanUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onunlinkdiscordui" data-search="avatar:onunlinkdiscordui() opens the unlink discord ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onUnlinkDiscordUI</span>()</div>
+          <p class="method-desc">Opens the unlink Discord UI.</p>
+          <pre class="method-code"><code>player:onUnlinkDiscordUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onvouchersui" data-search="avatar:onvouchersui() opens the vouchers ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onVouchersUI</span>()</div>
+          <p class="method-desc">Opens the vouchers UI.</p>
+          <pre class="method-code"><code>player:onVouchersUI()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-onwrenchiconsui-optional-targetplayer" data-search="avatar:onwrenchiconsui(optional - targetplayer) opens the wrench icons ui.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">onWrenchIconsUI</span>(optional - targetPlayer)</div>
+          <p class="method-desc">Opens the wrench icons UI.</p>
+          <pre class="method-code"><code>player:onWrenchIconsUI(targetPlayer)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-P">
+      <h2 class="letter-group-title"><span class="tag">P</span>P &middot; 3 methods</h2>
+      
+        <div class="method-card" id="avatar-placeblock-x-y-itemid" data-search="avatar:placeblock(x, y, itemid) places a block at the specified position.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">placeBlock</span>(x, y, itemID)</div>
+          <p class="method-desc">Places a block at the specified position.</p>
+          <pre class="method-code"><code>player:placeBlock(10, 10, 2)  -- Place dirt at (10,10)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-playaudio-message" data-search="avatar:playaudio(message) plays audio for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">playAudio</span>(message)</div>
+          <p class="method-desc">Plays audio for the avatar.</p>
+          <pre class="method-code"><code>player:playAudio("audio/hub_open.wav")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-punchblock-x-y" data-search="avatar:punchblock(x, y) punches a block at the specified position.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">punchBlock</span>(x, y)</div>
+          <p class="method-desc">Punches a block at the specified position.</p>
+          <pre class="method-code"><code>player:punchBlock(10, 10)  -- Punch block at (10,10)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-R">
+      <h2 class="letter-group-title"><span class="tag">R</span>R &middot; 14 methods</h2>
+      
+        <div class="method-card" id="avatar-removeactivetitle-title-id" data-search="avatar:removeactivetitle(title_id) removes an active title from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeActiveTitle</span>(title_id)</div>
+          <p class="method-desc">Removes an active title from the avatar.</p>
+          <pre class="method-code"><code>player:removeActiveTitle(5)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removebankbalance-balance" data-search="avatar:removebankbalance(balance) removes balance from the avatar's bank account.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeBankBalance</span>(balance)</div>
+          <p class="method-desc">Removes balance from the avatar's bank account.</p>
+          <pre class="method-code"><code>player:removeBankBalance(50)  -- Remove 50 WL from bank</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removeblessing-blessingid" data-search="avatar:removeblessing(blessingid) removes a blessing from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeBlessing</span>(blessingID)</div>
+          <p class="method-desc">Removes a blessing from the avatar.</p>
+          <pre class="method-code"><code>player:removeBlessing(1)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removecoins-coins-progressquests" data-search="avatar:removecoins(coins, progressquests) removes coins from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeCoins</span>(coins, progressQuests)</div>
+          <p class="method-desc">Removes coins from the avatar.</p>
+          <pre class="method-code"><code>player:removeCoins(100, 1)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removefriend-second-player" data-search="avatar:removefriend(second_player) removes a friend from the avatar's friend list.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeFriend</span>(second_player)</div>
+          <p class="method-desc">Removes a friend from the avatar's friend list.</p>
+          <pre class="method-code"><code>player:removeFriend(targetPlayer)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removegems-gems-instantset-progressquests" data-search="avatar:removegems(gems, instantset, progressquests) removes gems from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeGems</span>(gems, instantSet, progressQuests)</div>
+          <p class="method-desc">Removes gems from the avatar.</p>
+          <pre class="method-code"><code>player:removeGems(100, 1, 1)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removeinventoryspace-size" data-search="avatar:removeinventoryspace(size) removes inventory space from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeInventorySpace</span>(size)</div>
+          <p class="method-desc">Removes inventory space from the avatar.</p>
+          <pre class="method-code"><code>player:removeInventorySpace(10)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removelevel-level" data-search="avatar:removelevel(level) removes levels from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeLevel</span>(level)</div>
+          <p class="method-desc">Removes levels from the avatar.</p>
+          <pre class="method-code"><code>player:removeLevel(5)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removemod-modid" data-search="avatar:removemod(modid) removes a mod from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeMod</span>(modID)</div>
+          <p class="method-desc">Removes a mod from the avatar.</p>
+          <pre class="method-code"><code>player:removeMod(-77)  -- Remove vanish mod</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removesubscription-type" data-search="avatar:removesubscription(type) removes a subscription from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeSubscription</span>(type)</div>
+          <p class="method-desc">Removes a subscription from the avatar.</p>
+          <pre class="method-code"><code>player:removeSubscription(1)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removetitle-title-id" data-search="avatar:removetitle(title_id) removes a title from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeTitle</span>(title_id)</div>
+          <p class="method-desc">Removes a title from the avatar.</p>
+          <pre class="method-code"><code>player:removeTitle(10)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-removexp-xp" data-search="avatar:removexp(xp) removes xp from the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">removeXP</span>(xp)</div>
+          <p class="method-desc">Removes XP from the avatar.</p>
+          <pre class="method-code"><code>player:removeXP(1000)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-resetdialogcolor" data-search="avatar:resetdialogcolor() resets the dialog color to default.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">resetDialogColor</span>()</div>
+          <p class="method-desc">Resets the dialog color to default.</p>
+          <pre class="method-code"><code>player:resetDialogColor()</code></pre>
+        </div>
+        <div class="method-card" id="avatar-resetnickname" data-search="avatar:resetnickname() resets the avatar's nickname to the real name.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">resetNickname</span>()</div>
+          <p class="method-desc">Resets the avatar's nickname to the real name.</p>
+          <pre class="method-code"><code>player:resetNickname()</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-S">
+      <h2 class="letter-group-title"><span class="tag">S</span>S &middot; 34 methods</h2>
+      
+        <div class="method-card" id="avatar-sendaction-action-str" data-search="avatar:sendaction(action_str) sends an action to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">sendAction</span>(action_str)</div>
+          <p class="method-desc">Sends an action to the avatar.</p>
+          <pre class="method-code"><code>player:sendAction("action|play_sfx\nfile|audio/coin.wav")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-sendrawpacket-data" data-search="avatar:sendrawpacket(data) sends a raw packet to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">sendRawPacket</span>(data)</div>
+          <p class="method-desc">Sends a raw packet to the avatar.</p>
+          <pre class="method-code"><code>player:sendRawPacket("action|input\n|text|Hello")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-sendvariant-variantlist" data-search="avatar:sendvariant(variantlist) sends a variant list packet to the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">sendVariant</span>(variantList)</div>
+          <p class="method-desc">Sends a variant list packet to the avatar.</p>
+          <pre class="method-code"><code>player:sendVariant({"OnConsoleMessage", "Hello!", 0, -1})</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setaapenabled-aapenabled" data-search="avatar:setaapenabled(aapenabled) sets the aap (advanced account protection) enabled state.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setAAPEnabled</span>(aapEnabled)</div>
+          <p class="method-desc">Sets the AAP (Advanced Account Protection) enabled state.</p>
+          <pre class="method-code"><code>player:setAAPEnabled(1)  -- Enable AAP</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setaccountcreationtime-time" data-search="avatar:setaccountcreationtime(time) sets the account creation time of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setAccountCreationTime</span>(time)</div>
+          <p class="method-desc">Sets the account creation time of the avatar.</p>
+          <pre class="method-code"><code>player:setAccountCreationTime(os.time() - 86400)  -- Set to 1 day ago</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setbankbalance-balance" data-search="avatar:setbankbalance(balance) sets the bank balance of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setBankBalance</span>(balance)</div>
+          <p class="method-desc">Sets the bank balance of the avatar.</p>
+          <pre class="method-code"><code>player:setBankBalance(1000)  -- Set bank balance to 1000 WL</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setbroadcastworld-worldname" data-search="avatar:setbroadcastworld(worldname) sets the broadcast world for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setBroadcastWorld</span>(worldName)</div>
+          <p class="method-desc">Sets the broadcast world for the avatar.</p>
+          <pre class="method-code"><code>player:setBroadcastWorld("START")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setclothes-slot-itemid" data-search="avatar:setclothes(slot, itemid) sets a clothing item for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setClothes</span>(slot, itemID)</div>
+          <p class="method-desc">Sets a clothing item for the avatar.</p>
+          <pre class="method-code"><code>player:setClothes(0, 1000)  -- Set hat slot to item 1000</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setclothescolor-slot-color" data-search="avatar:setclothescolor(slot, color) sets the color of a clothing slot.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setClothesColor</span>(slot, color)</div>
+          <p class="method-desc">Sets the color of a clothing slot.</p>
+          <pre class="method-code"><code>player:setClothesColor(0, "FF0000")  -- Set hat color to red</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setcoins-coins" data-search="avatar:setcoins(coins) sets the coins of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setCoins</span>(coins)</div>
+          <p class="method-desc">Sets the coins of the avatar.</p>
+          <pre class="method-code"><code>player:setCoins(500)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setcountry-country" data-search="avatar:setcountry(country) sets the country of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setCountry</span>(country)</div>
+          <p class="method-desc">Sets the country of the avatar.</p>
+          <pre class="method-code"><code>player:setCountry("US")  -- Set country to United States</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setcountryflagbackground-item-id" data-search="avatar:setcountryflagbackground(item_id) sets the country flag background.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setCountryFlagBackground</span>(item_id)</div>
+          <p class="method-desc">Sets the country flag background.</p>
+          <pre class="method-code"><code>player:setCountryFlagBackground(1000)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setcountryflagforeground-item-id" data-search="avatar:setcountryflagforeground(item_id) sets the country flag foreground.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setCountryFlagForeground</span>(item_id)</div>
+          <p class="method-desc">Sets the country flag foreground.</p>
+          <pre class="method-code"><code>player:setCountryFlagForeground(1001)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setcustomautofarmdelay-delay" data-search="avatar:setcustomautofarmdelay(delay) sets the custom autofarm delay for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setCustomAutofarmDelay</span>(delay)</div>
+          <p class="method-desc">Sets the custom autofarm delay for the avatar.</p>
+          <pre class="method-code"><code>player:setCustomAutofarmDelay(500)  -- Set to 500ms</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setdungeonscrolls-scrolls" data-search="avatar:setdungeonscrolls(scrolls) sets the dungeon scrolls count.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setDungeonScrolls</span>(scrolls)</div>
+          <p class="method-desc">Sets the dungeon scrolls count.</p>
+          <pre class="method-code"><code>player:setDungeonScrolls(10)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-seteffects" data-search="avatar:seteffects() sets the effects for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setEffects</span>()</div>
+          <p class="method-desc">Sets the effects for the avatar.</p>
+          <pre class="method-code"><code>player:setEffects({extra_gems = 10, extra_xp = 5})</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setemail-email" data-search="avatar:setemail(email) sets the email of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setEmail</span>(email)</div>
+          <p class="method-desc">Sets the email of the avatar.</p>
+          <pre class="method-code"><code>player:setEmail("player@example.com")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setgender-gender" data-search="avatar:setgender(gender) sets the gender of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setGender</span>(gender)</div>
+          <p class="method-desc">Sets the gender of the avatar.</p>
+          <pre class="method-code"><code>player:setGender(0)  -- Set to Male</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setgems-gems-instantset" data-search="avatar:setgems(gems, instantset) sets the gems of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setGems</span>(gems, instantSet)</div>
+          <p class="method-desc">Sets the gems of the avatar.</p>
+          <pre class="method-code"><code>player:setGems(1000, 1)  -- Set to 1000 gems, instant update</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setgodmode-enabled" data-search="avatar:setgodmode(enabled) sets the god mode for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setGodMode</span>(enabled)</div>
+          <p class="method-desc">Sets the god mode for the avatar.</p>
+          <pre class="method-code"><code>player:setGodMode(true)  -- Enable god mode</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setgrowpasspoints-points" data-search="avatar:setgrowpasspoints(points) sets the growpass points of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setGrowpassPoints</span>(points)</div>
+          <p class="method-desc">Sets the Growpass points of the avatar.</p>
+          <pre class="method-code"><code>player:setGrowpassPoints(500)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setguildname-name" data-search="avatar:setguildname(name) sets the guild name for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setGuildName</span>(name)</div>
+          <p class="method-desc">Sets the guild name for the avatar.</p>
+          <pre class="method-code"><code>player:setGuildName("My Guild")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setinventoryspace-newsize" data-search="avatar:setinventoryspace(newsize) sets the inventory space of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setInventorySpace</span>(newSize)</div>
+          <p class="method-desc">Sets the inventory space of the avatar.</p>
+          <pre class="method-code"><code>player:setInventorySpace(100)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setlevel-level" data-search="avatar:setlevel(level) sets the level of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setLevel</span>(level)</div>
+          <p class="method-desc">Sets the level of the avatar.</p>
+          <pre class="method-code"><code>player:setLevel(50)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setnickname-nickname" data-search="avatar:setnickname(nickname) sets the nickname of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setNickname</span>(nickname)</div>
+          <p class="method-desc">Sets the nickname of the avatar.</p>
+          <pre class="method-code"><code>player:setNickname("`6@CoolPlayer")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setnextdialogborderrgba-r-g-b-a" data-search="avatar:setnextdialogborderrgba(r, g, b, a) sets the next dialog border color.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setNextDialogBorderRGBA</span>(R, G, B, A)</div>
+          <p class="method-desc">Sets the next dialog border color.</p>
+          <pre class="method-code"><code>player:setNextDialogBorderRGBA(255, 0, 0, 255)  -- Red border</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setnextdialogrgba-r-g-b-a" data-search="avatar:setnextdialogrgba(r, g, b, a) sets the next dialog background color.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setNextDialogRGBA</span>(R, G, B, A)</div>
+          <p class="method-desc">Sets the next dialog background color.</p>
+          <pre class="method-code"><code>player:setNextDialogRGBA(0, 0, 255, 255)  -- Blue background</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setownerrole-roleid" data-search="avatar:setownerrole(roleid) sets the owner role of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setOwnerRole</span>(roleID)</div>
+          <p class="method-desc">Sets the owner role of the avatar.</p>
+          <pre class="method-code"><code>player:setOwnerRole(11)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setpassword-tankidpass" data-search="avatar:setpassword(tankidpass) sets the password of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setPassword</span>(tankIDPass)</div>
+          <p class="method-desc">Sets the password of the avatar.</p>
+          <pre class="method-code"><code>player:setPassword("newPassword123")</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setplaytime-time" data-search="avatar:setplaytime(time) sets the playtime of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setPlaytime</span>(time)</div>
+          <p class="method-desc">Sets the playtime of the avatar.</p>
+          <pre class="method-code"><code>player:setPlaytime(3600)  -- Set to 1 hour</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setrole-roleid" data-search="avatar:setrole(roleid) sets the role of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setRole</span>(roleID)</div>
+          <p class="method-desc">Sets the role of the avatar.</p>
+          <pre class="method-code"><code>player:setRole(11)  -- Set to Staff role</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setrolequestlevel-type-newlevel" data-search="avatar:setrolequestlevel(type, newlevel) sets the role quest level of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setRoleQuestLevel</span>(type, newLevel)</div>
+          <p class="method-desc">Sets the role quest level of the avatar.</p>
+          <pre class="method-code"><code>player:setRoleQuestLevel(0, 5)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setstats-stattype-statnumber" data-search="avatar:setstats(stattype, statnumber) sets a specific stat of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setStats</span>(statType, statNumber)</div>
+          <p class="method-desc">Sets a specific stat of the avatar.</p>
+          <pre class="method-code"><code>player:setStats(21, 100)  -- Set surgeries to 100</code></pre>
+        </div>
+        <div class="method-card" id="avatar-setxp-xp" data-search="avatar:setxp(xp) sets the xp of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">setXP</span>(xp)</div>
+          <p class="method-desc">Sets the XP of the avatar.</p>
+          <pre class="method-code"><code>player:setXP(5000)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-U">
+      <h2 class="letter-group-title"><span class="tag">U</span>U &middot; 3 methods</h2>
+      
+        <div class="method-card" id="avatar-upgradeinventoryspace-size" data-search="avatar:upgradeinventoryspace(size) upgrades the inventory space of the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">upgradeInventorySpace</span>(size)</div>
+          <p class="method-desc">Upgrades the inventory space of the avatar.</p>
+          <pre class="method-code"><code>player:upgradeInventorySpace(20)  -- Add 20 slots</code></pre>
+        </div>
+        <div class="method-card" id="avatar-updategems-instantset" data-search="avatar:updategems(instantset) updates the gems display for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">updateGems</span>(instantSet)</div>
+          <p class="method-desc">Updates the gems display for the avatar.</p>
+          <pre class="method-code"><code>player:updateGems(1)  -- Instant update</code></pre>
+        </div>
+        <div class="method-card" id="avatar-updatestats-world-type-optional-amount" data-search="avatar:updatestats(world, type, optional - amount) updates a stat for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">updateStats</span>(world, type, optional - amount)</div>
+          <p class="method-desc">Updates a stat for the avatar.</p>
+          <pre class="method-code"><code>player:updateStats(world, 21, 1)  -- Increment surgeries</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-V">
+      <h2 class="letter-group-title"><span class="tag">V</span>V &middot; 2 methods</h2>
+      
+        <div class="method-card" id="avatar-visualbuild-tile" data-search="avatar:visualbuild(tile) performs a visual build animation for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">visualBuild</span>(tile)</div>
+          <p class="method-desc">Performs a visual build animation for the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> tile = world:getTile(10, 10)
+player:visualBuild(tile)</code></pre>
+        </div>
+        <div class="method-card" id="avatar-visualpunch-tile" data-search="avatar:visualpunch(tile) performs a visual punch animation for the avatar.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">Avatar</span>:<span class="fn">visualPunch</span>(tile)</div>
+          <p class="method-desc">Performs a visual punch animation for the avatar.</p>
+          <pre class="method-code"><code><span class="kw">local</span> tile = world:getTile(10, 10)
+player:visualPunch(tile)</code></pre>
+        </div>
+    </section>
+    </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" style="font-family:var(--font-display);">Browse</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-A">A<span class="n">15</span></a></li><li><a href="#grp-B">B<span class="n">1</span></a></li><li><a href="#grp-C">C<span class="n">4</span></a></li><li><a href="#grp-D">D<span class="n">4</span></a></li><li><a href="#grp-E">E<span class="n">2</span></a></li><li><a href="#grp-G">G<span class="n">83</span></a></li><li><a href="#grp-H">H<span class="n">6</span></a></li><li><a href="#grp-I">I<span class="n">3</span></a></li><li><a href="#grp-L">L<span class="n">1</span></a></li><li><a href="#grp-O">O<span class="n">32</span></a></li><li><a href="#grp-P">P<span class="n">3</span></a></li><li><a href="#grp-R">R<span class="n">14</span></a></li><li><a href="#grp-S">S<span class="n">34</span></a></li><li><a href="#grp-U">U<span class="n">3</span></a></li><li><a href="#grp-V">V<span class="n">2</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="active" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container d-flex flex-wrap justify-content-between gap-2">
+    <span>GTPS.Host &mdash; unofficial Lua API reference</span>
+    <span>generated from source docs &middot; last updated 2026-06-27</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

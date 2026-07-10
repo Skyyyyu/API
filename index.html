@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GTPS.Host &middot; Lua API Reference</title>
+<meta name="description" content="Reference documentation for the GTPS.Host Lua scripting API: World, Avatar, Item, Tile, Discord integration, callbacks and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg gtps-navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+
+        <defs>
+          <linearGradient id="gtpsSheen" x1="4" y1="3" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      GTPS.Host <span style="color:var(--text-faint);font-weight:400;">/ Lua API Docs</span>
+    </a>
+    <div class="d-flex align-items-center order-lg-3 gap-2">
+      <a class="btn-discord-nav d-none d-sm-inline-flex" href="https://discord.gg/gtpshost" target="_blank" rel="noopener" aria-label="Join the GTPS.Host Discord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse order-lg-2" id="mainNav">
+      <ul class="navbar-nav ms-auto flex-wrap">
+        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">World & Tiles</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="world.html">World</a></li><li><a class="dropdown-item" href="tile.html">Tile</a></li><li><a class="dropdown-item" href="drop.html">Drop</a></li><li><a class="dropdown-item" href="iotm.html">IOTM</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items & Shop</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="item.html">Item</a></li><li><a class="dropdown-item" href="shopitem.html">ShopItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rendering</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="texture.html">Texture</a></li><li><a class="dropdown-item" href="sprite.html">Sprite</a></li><li><a class="dropdown-item" href="rendertexture.html">RenderTexture</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Avatar & Player</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="avatar.html">Avatar</a></li><li><a class="dropdown-item" href="avatarplayerautofarm.html">AvatarPlayerAutofarm</a></li><li><a class="dropdown-item" href="avatarplayerinventoryitem.html">AvatarPlayerInventoryItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Discord Integration</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="discordbot.html">DiscordBot</a></li><li><a class="dropdown-item" href="discordslashcommandevent.html">DiscordSlashCommandEvent</a></li><li><a class="dropdown-item" href="discordbuttonclickevent.html">DiscordButtonClickEvent</a></li><li><a class="dropdown-item" href="discordformsubmitevent.html">DiscordFormSubmitEvent</a></li><li><a class="dropdown-item" href="discordmessagecreateevent.html">DiscordMessageCreateEvent</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="callbacks.html">Callbacks</a></li></ul>
+        </li>
+      </ul>
+      <a class="btn-discord-nav d-sm-none mt-2" href="https://discord.gg/gtpshost" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">GrowServer &middot; Lua scripting</div>
+    <h1>The GTPS.Host<br><span class="accent">Lua API Docs</span>, mapped tile by tile.</h1>
+    <p class="lead">549 documented members. Pick a category below to see every
+      method, its arguments, and a working code snippet you can drop straight into a script.</p>
+  </div>
+</header>
+
+<div class="container text-center">
+  <a class="btn-discord-hero" href="https://discord.gg/gtpshost" target="_blank" rel="noopener">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+    <span>Join the GTPS.Host Discord</span>
+  </a>
+  <div class="discord-cta-sub">Get support, share scripts, and talk with other GrowServer devs.</div>
+</div>
+
+<main class="container pb-5" style="margin-top:3rem;">
+
+  <section class="mb-5">
+    <h2 class="category-title">World & Tiles</h2>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="world.html">
+          <div class="slot" style="background:linear-gradient(135deg,#9CCC3C,#9CCC3Cdd);">W</div>
+          <div class="slot-name">World</div>
+          <div class="slot-desc">The core world object — players, tiles, punishments, NPCs, gems, drops and more.</div>
+          <div class="slot-meta"><span>82 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="tile.html">
+          <div class="slot" style="background:linear-gradient(135deg,#7cd6c0,#7cd6c0dd);">T</div>
+          <div class="slot-name">Tile</div>
+          <div class="slot-desc">A single block/tile inside a world — foreground, background, data &amp; flags.</div>
+          <div class="slot-meta"><span>13 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="drop.html">
+          <div class="slot" style="background:linear-gradient(135deg,#c9975c,#c9975cdd);">Dr</div>
+          <div class="slot-name">Drop</div>
+          <div class="slot-desc">An item lying on the ground in a world, from getDroppedItems() or spawnItem().</div>
+          <div class="slot-meta"><span>6 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="iotm.html">
+          <div class="slot" style="background:linear-gradient(135deg,#E1963B,#E1963Bdd);">I</div>
+          <div class="slot-name">IOTM</div>
+          <div class="slot-desc">The server's current Item Of The Month. Read or set its id and stock amount.</div>
+          <div class="slot-meta"><span>3 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div></div>
+  </section>
+  <section class="mb-5">
+    <h2 class="category-title">Items & Shop</h2>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="item.html">
+          <div class="slot" style="background:linear-gradient(135deg,#9CCC3C,#9CCC3Cdd);">It</div>
+          <div class="slot-name">Item</div>
+          <div class="slot-desc">Static game data for a single item — pricing, texture, recipes, rarity and more.</div>
+          <div class="slot-meta"><span>50 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="shopitem.html">
+          <div class="slot" style="background:linear-gradient(135deg,#e2695f,#e2695fdd);">SI</div>
+          <div class="slot-name">ShopItem</div>
+          <div class="slot-desc">A single entry from the in-game store, pulled with getStoreItems().</div>
+          <div class="slot-meta"><span>17 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div></div>
+  </section>
+  <section class="mb-5">
+    <h2 class="category-title">Rendering</h2>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="texture.html">
+          <div class="slot" style="background:linear-gradient(135deg,#f0c869,#f0c869dd);">Tx</div>
+          <div class="slot-name">Texture</div>
+          <div class="slot-desc">A loadable image resource, backing sprites and render textures.</div>
+          <div class="slot-meta"><span>2 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="sprite.html">
+          <div class="slot" style="background:linear-gradient(135deg,#c58af0,#c58af0dd);">Sp</div>
+          <div class="slot-name">Sprite</div>
+          <div class="slot-desc">A drawable sprite instance rendered onto a RenderTexture.</div>
+          <div class="slot-meta"><span>5 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="rendertexture.html">
+          <div class="slot" style="background:linear-gradient(135deg,#4FB3E8,#4FB3E8dd);">RT</div>
+          <div class="slot-name">RenderTexture</div>
+          <div class="slot-desc">An off-screen drawable surface for compositing custom sprites and text.</div>
+          <div class="slot-meta"><span>9 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div></div>
+  </section>
+  <section class="mb-5">
+    <h2 class="category-title">Avatar & Player</h2>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="avatar.html">
+          <div class="slot" style="background:linear-gradient(135deg,#ff6b9d,#ff6b9ddd);">Av</div>
+          <div class="slot-name">Avatar</div>
+          <div class="slot-desc">The player's full avatar/account object — currency, inventory, stats, social &amp; moderation.</div>
+          <div class="slot-meta"><span>207 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="avatarplayerautofarm.html">
+          <div class="slot" style="background:linear-gradient(135deg,#ff8fb3,#ff8fb3dd);">AF</div>
+          <div class="slot-name">AvatarPlayerAutofarm</div>
+          <div class="slot-desc">The player's autofarm session — target block, movement, delay and active state.</div>
+          <div class="slot-meta"><span>16 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="avatarplayerinventoryitem.html">
+          <div class="slot" style="background:linear-gradient(135deg,#ffb3c9,#ffb3c9dd);">AI</div>
+          <div class="slot-name">AvatarPlayerInventoryItem</div>
+          <div class="slot-desc">A single inventory slot entry from getInventoryItems() — item id and count.</div>
+          <div class="slot-meta"><span>2 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div></div>
+  </section>
+  <section class="mb-5">
+    <h2 class="category-title">Discord Integration</h2>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="discordbot.html">
+          <div class="slot" style="background:linear-gradient(135deg,#5865F2,#5865F2dd);">DB</div>
+          <div class="slot-name">DiscordBot</div>
+          <div class="slot-desc">Static bot-level methods for sending/editing Discord messages and guild roles.</div>
+          <div class="slot-meta"><span>9 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="discordslashcommandevent.html">
+          <div class="slot" style="background:linear-gradient(135deg,#7686f5,#7686f5dd);">SC</div>
+          <div class="slot-name">DiscordSlashCommandEvent</div>
+          <div class="slot-desc">Event payload passed into onDiscordSlashCommandCallback for slash commands.</div>
+          <div class="slot-meta"><span>10 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="discordbuttonclickevent.html">
+          <div class="slot" style="background:linear-gradient(135deg,#8fa0fa,#8fa0fadd);">BC</div>
+          <div class="slot-name">DiscordButtonClickEvent</div>
+          <div class="slot-desc">Event payload passed into onDiscordButtonClickCallback when a button is pressed.</div>
+          <div class="slot-meta"><span>9 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="discordformsubmitevent.html">
+          <div class="slot" style="background:linear-gradient(135deg,#a7b6fc,#a7b6fcdd);">FS</div>
+          <div class="slot-name">DiscordFormSubmitEvent</div>
+          <div class="slot-desc">Event payload passed into onDiscordFormSubmitCallback for form submissions.</div>
+          <div class="slot-meta"><span>8 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="discordmessagecreateevent.html">
+          <div class="slot" style="background:linear-gradient(135deg,#c0ccfe,#c0ccfedd);">MC</div>
+          <div class="slot-name">DiscordMessageCreateEvent</div>
+          <div class="slot-desc">Event payload passed into onDiscordMessageCreateCallback for new messages.</div>
+          <div class="slot-meta"><span>9 methods</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div></div>
+  </section>
+  <section class="mb-5">
+    <h2 class="category-title">Events</h2>
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <a class="class-card" href="callbacks.html">
+          <div class="slot" style="background:linear-gradient(135deg,#ffd166,#ffd166dd);">CB</div>
+          <div class="slot-name">Callbacks</div>
+          <div class="slot-desc">Every registered server callback — the raw binding list for player, tile, world &amp; Discord events.</div>
+          <div class="slot-meta"><span>92 callbacks</span><span class="go">open &rarr;</span></div>
+        </a>
+      </div></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container d-flex flex-wrap justify-content-between gap-2">
+    <span>GTPS.Host &mdash; unofficial Lua API reference</span>
+    <span>generated from source docs &middot; last updated 2026-06-27 &middot; Created by :@Sky</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>World &middot; GTPS.Host Lua API</title>
+<meta name="description" content="The core world object — players, tiles, punishments, NPCs, gems, drops and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg gtps-navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <svg class="gtps-logo" width="30" height="30" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="#a9db4d" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="4,9.5 16,16 16,28.5 4,22" fill="#6f9a2a" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,16 28,9.5 28,22 16,28.5" fill="#c97a2e" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="url(#gtpsSheen)" opacity="0.5"/>
+        <defs>
+          <linearGradient id="gtpsSheen" x1="4" y1="3" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      GTPS.Host <span style="color:var(--text-faint);font-weight:400;">/ Lua API</span>
+    </a>
+    <div class="d-flex align-items-center order-lg-3 gap-2">
+      <a class="btn-discord-nav d-none d-sm-inline-flex" href="https://discord.gg/gtpshost" target="_blank" rel="noopener" aria-label="Join the GTPS.Host Discord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse order-lg-2" id="mainNav">
+      <ul class="navbar-nav ms-auto flex-wrap">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">World & Tiles</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item active" href="world.html">World</a></li><li><a class="dropdown-item" href="tile.html">Tile</a></li><li><a class="dropdown-item" href="drop.html">Drop</a></li><li><a class="dropdown-item" href="iotm.html">IOTM</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items & Shop</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="item.html">Item</a></li><li><a class="dropdown-item" href="shopitem.html">ShopItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rendering</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="texture.html">Texture</a></li><li><a class="dropdown-item" href="sprite.html">Sprite</a></li><li><a class="dropdown-item" href="rendertexture.html">RenderTexture</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Avatar & Player</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="avatar.html">Avatar</a></li><li><a class="dropdown-item" href="avatarplayerautofarm.html">AvatarPlayerAutofarm</a></li><li><a class="dropdown-item" href="avatarplayerinventoryitem.html">AvatarPlayerInventoryItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Discord Integration</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="discordbot.html">DiscordBot</a></li><li><a class="dropdown-item" href="discordslashcommandevent.html">DiscordSlashCommandEvent</a></li><li><a class="dropdown-item" href="discordbuttonclickevent.html">DiscordButtonClickEvent</a></li><li><a class="dropdown-item" href="discordformsubmitevent.html">DiscordFormSubmitEvent</a></li><li><a class="dropdown-item" href="discordmessagecreateevent.html">DiscordMessageCreateEvent</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="callbacks.html">Callbacks</a></li></ul>
+        </li>
+      </ul>
+      <a class="btn-discord-nav d-sm-none mt-2" href="https://discord.gg/gtpshost" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container docs-shell" style="padding-top:5.5rem;">
+  <div class="row">
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="docs-sidebar">
+        
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-A">A<span class="n">6</span></a></li><li><a href="#grp-C">C<span class="n">1</span></a></li><li><a href="#grp-D">D<span class="n">2</span></a></li><li><a href="#grp-F">F<span class="n">2</span></a></li><li><a href="#grp-G">G<span class="n">25</span></a></li><li><a href="#grp-H">H<span class="n">3</span></a></li><li><a href="#grp-I">I<span class="n">2</span></a></li><li><a href="#grp-K">K<span class="n">1</span></a></li><li><a href="#grp-N">N<span class="n">3</span></a></li><li><a href="#grp-O">O<span class="n">4</span></a></li><li><a href="#grp-P">P<span class="n">2</span></a></li><li><a href="#grp-R">R<span class="n">12</span></a></li><li><a href="#grp-S">S<span class="n">14</span></a></li><li><a href="#grp-U">U<span class="n">5</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="active" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <button class="btn btn-outline-light btn-sm d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+        &#9776; Browse &middot; jump to section or object
+      </button>
+
+      <h1 class="class-heading"><span class="slot" style="background:linear-gradient(135deg,#9CCC3C,#9CCC3Cdd);width:38px;height:38px;font-size:.95rem;border-radius:7px;">W</span>World</h1>
+      <p class="class-sub">The core world object — players, tiles, punishments, NPCs, gems, drops and more.</p>
+      <span class="method-count-pill"><span class="dot"></span>82 methods documented</span>
+
+      <div class="search-wrap mt-4">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="docs-search" id="docsSearch" placeholder="Filter World&hellip; e.g. a name or keyword">
+      </div>
+      <div class="search-empty" id="searchEmpty">No entries match that search.</div>
+
+      
+    <section class="letter-group" id="grp-A">
+      <h2 class="letter-group-title"><span class="tag">A</span>A &middot; 6 methods</h2>
+      
+        <div class="method-card" id="world-addpunishment-player-type-duration-reason-invoker-id" data-search="world:addpunishment(player, type, duration, reason, invoker_id) adds punishment data or value to this world. it uses player, type, duration, reason, invoker_id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">addPunishment</span>(player, type, duration, reason, invoker_id)</div>
+          <p class="method-desc">Adds punishment data or value to this world. It uses player, type, duration, reason, invoker_id.</p>
+          <pre class="method-code"><code>world:addPunishment(player, 1, 3600, "Reason here", 242)</code></pre>
+        </div>
+        <div class="method-card" id="world-adjustgems-player-tile-gemscount-noparticles" data-search="world:adjustgems(player, tile, gemscount, noparticles) adjusts gems collected from a tile for the specified player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">adjustGems</span>(player, tile, gemsCount, noParticles)</div>
+          <p class="method-desc">Adjusts gems collected from a tile for the specified player.</p>
+          <pre class="method-code"><code>world:adjustGems(player, tile, 50, 0)</code></pre>
+        </div>
+        <div class="method-card" id="world-addxp-player-xp-amount" data-search="world:addxp(player, xp_amount) adds xp data or value to this world. it uses player, xp_amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">addXP</span>(player, xp_amount)</div>
+          <p class="method-desc">Adds XP data or value to this world. It uses player, xp_amount.</p>
+          <pre class="method-code"><code>world:addXP(player, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-addtileaccess-player-tile" data-search="world:addtileaccess(player, tile) adds tile access data or value to this world. it uses player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">addTileAccess</span>(player, tile)</div>
+          <p class="method-desc">Adds tile access data or value to this world. It uses player, tile.</p>
+          <pre class="method-code"><code>world:addTileAccess(player, tile)</code></pre>
+        </div>
+        <div class="method-card" id="world-addaccess-player-admin-type" data-search="world:addaccess(player, admin_type) adds access data or value to this world. it uses player, admin_type.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">addAccess</span>(player, admin_type)</div>
+          <p class="method-desc">Adds access data or value to this world. It uses player, admin_type.</p>
+          <pre class="method-code"><code>world:addAccess(player, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-addflag-flag" data-search="world:addflag(flag) adds flag data or value to this world. it uses flag.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">addFlag</span>(flag)</div>
+          <p class="method-desc">Adds flag data or value to this world. It uses flag.</p>
+          <pre class="method-code"><code>world:addFlag(TILE_FLAG_IS_ON)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-C">
+      <h2 class="letter-group-title"><span class="tag">C</span>C &middot; 1 method</h2>
+      
+        <div class="method-card" id="world-createnpc-name-x-y" data-search="world:createnpc(name, x, y) creates the npc resource or entry. it uses name, x, y.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">createNPC</span>(name, x, y)</div>
+          <p class="method-desc">Creates the NPC resource or entry. It uses name, x, y.</p>
+          <pre class="method-code"><code>world:createNPC("MyName", 10, 10)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-D">
+      <h2 class="letter-group-title"><span class="tag">D</span>D &middot; 2 methods</h2>
+      
+        <div class="method-card" id="world-deleteeffects" data-search="world:deleteeffects() deletes the effects resource.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">deleteEffects</span>()</div>
+          <p class="method-desc">Deletes the effects resource.</p>
+          <pre class="method-code"><code>world:deleteEffects()</code></pre>
+        </div>
+        <div class="method-card" id="world-delete" data-search="world:delete() runs the delete operation for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">delete</span>()</div>
+          <p class="method-desc">Runs the delete operation for this world.</p>
+          <pre class="method-code"><code>world:delete()</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-F">
+      <h2 class="letter-group-title"><span class="tag">F</span>F &middot; 2 methods</h2>
+      
+        <div class="method-card" id="world-findnpcbyname-name" data-search="world:findnpcbyname(name) runs the find npcby name operation for this world. it uses name.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">findNPCByName</span>(name)</div>
+          <p class="method-desc">Runs the find npcby name operation for this world. It uses name.</p>
+          <pre class="method-code"><code>world:findNPCByName("MyName")</code></pre>
+        </div>
+        <div class="method-card" id="world-findpathbytile-tile-1-tile-2-max-rad-x-max-rad-y" data-search="world:findpathbytile(tile_1, tile_2, max_rad_x, max_rad_y) runs the find path by tile operation for this world. it uses tile_1, tile_2, max_rad_x, max_rad_y.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">findPathByTile</span>(tile_1, tile_2, max_rad_x, max_rad_y)</div>
+          <p class="method-desc">Runs the find path by tile operation for this world. It uses tile_1, tile_2, max_rad_x, max_rad_y.</p>
+          <pre class="method-code"><code>world:findPathByTile(tile, tile, 1, 1)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-G">
+      <h2 class="letter-group-title"><span class="tag">G</span>G &middot; 25 methods</h2>
+      
+        <div class="method-card" id="world-getname" data-search="world:getname() returns the name for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getName</span>()</div>
+          <p class="method-desc">Returns the name for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> name = world:getName()
+<span class="kw">print</span>("name:", name)</code></pre>
+        </div>
+        <div class="method-card" id="world-getowner" data-search="world:getowner() returns the owner for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getOwner</span>()</div>
+          <p class="method-desc">Returns the owner for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> owner = world:getOwner()
+<span class="kw">print</span>("owner:", owner)</code></pre>
+        </div>
+        <div class="method-card" id="world-getpunishment-player-type" data-search="world:getpunishment(player, type) returns the punishment for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getPunishment</span>(player, type)</div>
+          <p class="method-desc">Returns the punishment for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> punishment = world:getPunishment(player, 1)
+<span class="kw">print</span>("punishment:", punishment)</code></pre>
+        </div>
+        <div class="method-card" id="world-getallpunishments" data-search="world:getallpunishments() returns the all punishments for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getAllPunishments</span>()</div>
+          <p class="method-desc">Returns the all punishments for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> allPunishments = world:getAllPunishments()
+<span class="kw">print</span>("allPunishments:", allPunishments)</code></pre>
+        </div>
+        <div class="method-card" id="world-getid" data-search="world:getid() returns the id for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getID</span>()</div>
+          <p class="method-desc">Returns the ID for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> iD = world:getID()
+<span class="kw">print</span>("iD:", iD)</code></pre>
+        </div>
+        <div class="method-card" id="world-gettile-x-y" data-search="world:gettile(x, y) returns the tile for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getTile</span>(x, y)</div>
+          <p class="method-desc">Returns the tile for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> tile = world:getTile(10, 10)
+<span class="kw">print</span>("tile:", tile)</code></pre>
+        </div>
+        <div class="method-card" id="world-getplayers" data-search="world:getplayers() returns the players for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getPlayers</span>()</div>
+          <p class="method-desc">Returns the players for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> players = world:getPlayers()
+<span class="kw">print</span>("players:", players)</code></pre>
+        </div>
+        <div class="method-card" id="world-getplayerscount-optional-show-all" data-search="world:getplayerscount(optional - show_all) returns the players count for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getPlayersCount</span>(optional - show_all)</div>
+          <p class="method-desc">Returns the players count for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> playersCount = world:getPlayersCount(1)
+<span class="kw">print</span>("playersCount:", playersCount)</code></pre>
+        </div>
+        <div class="method-card" id="world-getvisibleplayerscount" data-search="world:getvisibleplayerscount() returns the visible players count for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getVisiblePlayersCount</span>()</div>
+          <p class="method-desc">Returns the visible players count for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> visiblePlayersCount = world:getVisiblePlayersCount()
+<span class="kw">print</span>("visiblePlayersCount:", visiblePlayersCount)</code></pre>
+        </div>
+        <div class="method-card" id="world-getworldsizex" data-search="world:getworldsizex() returns the world size x for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getWorldSizeX</span>()</div>
+          <p class="method-desc">Returns the world size x for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worldSizeX = world:getWorldSizeX()
+<span class="kw">print</span>("worldSizeX:", worldSizeX)</code></pre>
+        </div>
+        <div class="method-card" id="world-getworldsizey" data-search="world:getworldsizey() returns the world size y for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getWorldSizeY</span>()</div>
+          <p class="method-desc">Returns the world size y for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worldSizeY = world:getWorldSizeY()
+<span class="kw">print</span>("worldSizeY:", worldSizeY)</code></pre>
+        </div>
+        <div class="method-card" id="world-getworldtype" data-search="world:getworldtype() returns the world type for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getWorldType</span>()</div>
+          <p class="method-desc">Returns the world type for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worldType = world:getWorldType()
+<span class="kw">print</span>("worldType:", worldType)</code></pre>
+        </div>
+        <div class="method-card" id="world-gettiles" data-search="world:gettiles() returns the tiles for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getTiles</span>()</div>
+          <p class="method-desc">Returns the tiles for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> tiles = world:getTiles()
+<span class="kw">print</span>("tiles:", tiles)</code></pre>
+        </div>
+        <div class="method-card" id="world-getemptytiles" data-search="world:getemptytiles() returns the empty tiles for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getEmptyTiles</span>()</div>
+          <p class="method-desc">Returns the empty tiles for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> emptyTiles = world:getEmptyTiles()
+<span class="kw">print</span>("emptyTiles:", emptyTiles)</code></pre>
+        </div>
+        <div class="method-card" id="world-getnocollisiontiles" data-search="world:getnocollisiontiles() returns the no collision tiles for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getNoCollisionTiles</span>()</div>
+          <p class="method-desc">Returns the no collision tiles for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> noCollisionTiles = world:getNoCollisionTiles()
+<span class="kw">print</span>("noCollisionTiles:", noCollisionTiles)</code></pre>
+        </div>
+        <div class="method-card" id="world-getdroppeditems" data-search="world:getdroppeditems() returns the dropped items for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getDroppedItems</span>()</div>
+          <p class="method-desc">Returns the dropped items for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> droppedItems = world:getDroppedItems()
+<span class="kw">print</span>("droppedItems:", droppedItems)</code></pre>
+        </div>
+        <div class="method-card" id="world-gettiledroppeditems-tile" data-search="world:gettiledroppeditems(tile) returns the tile dropped items for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getTileDroppedItems</span>(tile)</div>
+          <p class="method-desc">Returns the tile dropped items for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> tileDroppedItems = world:getTileDroppedItems(tile)
+<span class="kw">print</span>("tileDroppedItems:", tileDroppedItems)</code></pre>
+        </div>
+        <div class="method-card" id="world-getallnpc" data-search="world:getallnpc() returns the all npc for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getAllNPC</span>()</div>
+          <p class="method-desc">Returns the all NPC for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> allNPC = world:getAllNPC()
+<span class="kw">print</span>("allNPC:", allNPC)</code></pre>
+        </div>
+        <div class="method-card" id="world-getworldlock" data-search="world:getworldlock() returns the world lock for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getWorldLock</span>()</div>
+          <p class="method-desc">Returns the world lock for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> worldLock = world:getWorldLock()
+<span class="kw">print</span>("worldLock:", worldLock)</code></pre>
+        </div>
+        <div class="method-card" id="world-getmagplantremotetile-player" data-search="world:getmagplantremotetile(player) returns the magplant remote tile for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getMagplantRemoteTile</span>(player)</div>
+          <p class="method-desc">Returns the magplant remote tile for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> magplantRemoteTile = world:getMagplantRemoteTile(player)
+<span class="kw">print</span>("magplantRemoteTile:", magplantRemoteTile)</code></pre>
+        </div>
+        <div class="method-card" id="world-getguildid" data-search="world:getguildid() returns the guild id for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getGuildID</span>()</div>
+          <p class="method-desc">Returns the guild ID for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> guildID = world:getGuildID()
+<span class="kw">print</span>("guildID:", guildID)</code></pre>
+        </div>
+        <div class="method-card" id="world-getmachinecap-item-id" data-search="world:getmachinecap(item_id) returns the machine cap for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getMachineCap</span>(item_id)</div>
+          <p class="method-desc">Returns the machine cap for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> machineCap = world:getMachineCap(242)
+<span class="kw">print</span>("machineCap:", machineCap)</code></pre>
+        </div>
+        <div class="method-card" id="world-getmachinecaps" data-search="world:getmachinecaps() returns the machine caps for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getMachineCaps</span>()</div>
+          <p class="method-desc">Returns the machine caps for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> machineCaps = world:getMachineCaps()
+<span class="kw">print</span>("machineCaps:", machineCaps)</code></pre>
+        </div>
+        <div class="method-card" id="world-geteffects" data-search="world:geteffects() returns the effects for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getEffects</span>()</div>
+          <p class="method-desc">Returns the effects for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> effects = world:getEffects()
+<span class="kw">print</span>("effects:", effects)</code></pre>
+        </div>
+        <div class="method-card" id="world-getcached-item-id" data-search="world:getcached(item_id) returns the cached for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">getCached</span>(item_id)</div>
+          <p class="method-desc">Returns the cached for this world.</p>
+          <pre class="method-code"><code><span class="kw">local</span> cached = world:getCached(242)
+<span class="kw">print</span>("cached:", cached)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-H">
+      <h2 class="letter-group-title"><span class="tag">H</span>H &middot; 3 methods</h2>
+      
+        <div class="method-card" id="world-hastileaccess-player-tile" data-search="world:hastileaccess(player, tile) checks whether the player has access to the specified tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">hasTileAccess</span>(player, tile)</div>
+          <p class="method-desc">Checks whether the player has access to the specified tile.</p>
+          <pre class="method-code"><code><span class="kw">if</span> world:hasTileAccess(player, tile) <span class="kw">then</span>
+    <span class="kw">print</span>("Condition met")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="world-hasaccess-player" data-search="world:hasaccess(player) checks whether the player has world-level access.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">hasAccess</span>(player)</div>
+          <p class="method-desc">Checks whether the player has world-level access.</p>
+          <pre class="method-code"><code><span class="kw">if</span> world:hasAccess(player) <span class="kw">then</span>
+    <span class="kw">print</span>("Condition met")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="world-hasflag-flag" data-search="world:hasflag(flag) checks whether this world has flag. it uses flag.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">hasFlag</span>(flag)</div>
+          <p class="method-desc">Checks whether this world has flag. It uses flag.</p>
+          <pre class="method-code"><code><span class="kw">if</span> world:hasFlag(TILE_FLAG_IS_ON) <span class="kw">then</span>
+    <span class="kw">print</span>("Condition met")
+<span class="kw">end</span></code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-I">
+      <h2 class="letter-group-title"><span class="tag">I</span>I &middot; 2 methods</h2>
+      
+        <div class="method-card" id="world-isgameactive" data-search="world:isgameactive() checks whether this world is game active.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">isGameActive</span>()</div>
+          <p class="method-desc">Checks whether this world is game active.</p>
+          <pre class="method-code"><code><span class="kw">if</span> world:isGameActive() <span class="kw">then</span>
+    <span class="kw">print</span>("Condition met")
+<span class="kw">end</span></code></pre>
+        </div>
+        <div class="method-card" id="world-isnuked" data-search="world:isnuked() checks whether this world is nuked.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">isNuked</span>()</div>
+          <p class="method-desc">Checks whether this world is nuked.</p>
+          <pre class="method-code"><code><span class="kw">if</span> world:isNuked() <span class="kw">then</span>
+    <span class="kw">print</span>("Condition met")
+<span class="kw">end</span></code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-K">
+      <h2 class="letter-group-title"><span class="tag">K</span>K &middot; 1 method</h2>
+      
+        <div class="method-card" id="world-kill-player-optional-force-respawn-on-white-door" data-search="world:kill(player, optional - force_respawn_on_white_door) kills the player in this world and optionally forces respawn on the white door.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">kill</span>(player, optional - force_respawn_on_white_door)</div>
+          <p class="method-desc">Kills the player in this world and optionally forces respawn on the white door.</p>
+          <pre class="method-code"><code>world:kill(player, 1)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-N">
+      <h2 class="letter-group-title"><span class="tag">N</span>N &middot; 3 methods</h2>
+      
+        <div class="method-card" id="world-nuke-ownerbantime-adminsbantime-everyoneelsebantime" data-search="world:nuke(ownerbantime, adminsbantime, everyoneelsebantime) runs the nuke operation for this world. it uses ownerbantime, adminsbantime, everyoneelsebantime.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">nuke</span>(ownerBanTime, adminsBanTime, everyoneElseBanTime)</div>
+          <p class="method-desc">Runs the nuke operation for this world. It uses ownerBanTime, adminsBanTime, everyoneElseBanTime.</p>
+          <pre class="method-code"><code>world:nuke(1, 1, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-new-sizex-sizey-worldtype" data-search="world:new(sizex, sizey, worldtype) creates a new world using the requested size and world type.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">new</span>(sizeX, sizeY, worldType)</div>
+          <p class="method-desc">Creates a new world using the requested size and world type.</p>
+          <pre class="method-code"><code>world:new(1, 1, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-newfromtemplate-templatearg" data-search="world:newfromtemplate(templatearg) creates a new world from an existing template argument.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">newFromTemplate</span>(templateArg)</div>
+          <p class="method-desc">Creates a new world from an existing template argument.</p>
+          <pre class="method-code"><code>world:newFromTemplate(1)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-O">
+      <h2 class="letter-group-title"><span class="tag">O</span>O &middot; 4 methods</h2>
+      
+        <div class="method-card" id="world-onloot-player-tile-gemscount" data-search="world:onloot(player, tile, gemscount) runs the world loot handling logic for a player and tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">onLoot</span>(player, tile, gemsCount)</div>
+          <p class="method-desc">Runs the world loot handling logic for a player and tile.</p>
+          <pre class="method-code"><code>world:onLoot(player, tile, 50)</code></pre>
+        </div>
+        <div class="method-card" id="world-ongamewinhighestscore" data-search="world:ongamewinhighestscore() triggers the game win highest score behavior for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">onGameWinHighestScore</span>()</div>
+          <p class="method-desc">Triggers the game win highest score behavior for this world.</p>
+          <pre class="method-code"><code>world:onGameWinHighestScore()</code></pre>
+        </div>
+        <div class="method-card" id="world-oncreatechatbubble-posx-posy-message-persistmessage" data-search="world:oncreatechatbubble(posx, posy, message, persistmessage) triggers the create chat bubble behavior for this world. it uses posx, posy, message, persistmessage.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">onCreateChatBubble</span>(posX, posY, message, persistMessage)</div>
+          <p class="method-desc">Triggers the create chat bubble behavior for this world. It uses posX, posY, message, persistMessage.</p>
+          <pre class="method-code"><code>world:onCreateChatBubble(10, 10, "Hello!", "persistMessage")</code></pre>
+        </div>
+        <div class="method-card" id="world-oncreateexplosion-posx-posy-radius-power" data-search="world:oncreateexplosion(posx, posy, radius, power) triggers the create explosion behavior for this world. it uses posx, posy, radius, power.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">onCreateExplosion</span>(posX, posY, radius, power)</div>
+          <p class="method-desc">Triggers the create explosion behavior for this world. It uses posX, posY, radius, power.</p>
+          <pre class="method-code"><code>world:onCreateExplosion(10, 10, 5, 2)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-P">
+      <h2 class="letter-group-title"><span class="tag">P</span>P &middot; 2 methods</h2>
+      
+        <div class="method-card" id="world-punchtile-tile-optional-player" data-search="world:punchtile(tile, optional - player) runs the punch tile operation for this world. it uses tile, optional player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">punchTile</span>(tile, optional - player)</div>
+          <p class="method-desc">Runs the punch tile operation for this world. It uses tile, optional player.</p>
+          <pre class="method-code"><code>world:punchTile(tile, player)</code></pre>
+        </div>
+        <div class="method-card" id="world-placetile-tile-id-optional-player" data-search="world:placetile(tile, id, optional - player) runs the place tile operation for this world. it uses tile, id, optional player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">placeTile</span>(tile, id, optional - player)</div>
+          <p class="method-desc">Runs the place tile operation for this world. It uses tile, id, optional player.</p>
+          <pre class="method-code"><code>world:placeTile(tile, 242, player)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-R">
+      <h2 class="letter-group-title"><span class="tag">R</span>R &middot; 12 methods</h2>
+      
+        <div class="method-card" id="world-removeowner" data-search="world:removeowner() removes the owner from this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeOwner</span>()</div>
+          <p class="method-desc">Removes the owner from this world.</p>
+          <pre class="method-code"><code>world:removeOwner()</code></pre>
+        </div>
+        <div class="method-card" id="world-removepunishment-player-type" data-search="world:removepunishment(player, type) removes the punishment from this world. it uses player, type.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removePunishment</span>(player, type)</div>
+          <p class="method-desc">Removes the punishment from this world. It uses player, type.</p>
+          <pre class="method-code"><code>world:removePunishment(player, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-removedroppeditem-uid" data-search="world:removedroppeditem(uid) removes the dropped item from this world. it uses uid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeDroppedItem</span>(uid)</div>
+          <p class="method-desc">Removes the dropped item from this world. It uses uid.</p>
+          <pre class="method-code"><code>world:removeDroppedItem(242)</code></pre>
+        </div>
+        <div class="method-card" id="world-removedroppeditemsbyid-id" data-search="world:removedroppeditemsbyid(id) removes the dropped items by id from this world. it uses id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeDroppedItemsByID</span>(id)</div>
+          <p class="method-desc">Removes the dropped items by ID from this world. It uses id.</p>
+          <pre class="method-code"><code>world:removeDroppedItemsByID(242)</code></pre>
+        </div>
+        <div class="method-card" id="world-removealldroppeditems" data-search="world:removealldroppeditems() removes the all dropped items from this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeAllDroppedItems</span>()</div>
+          <p class="method-desc">Removes the all dropped items from this world.</p>
+          <pre class="method-code"><code>world:removeAllDroppedItems()</code></pre>
+        </div>
+        <div class="method-card" id="world-removetileaccess-player-tile" data-search="world:removetileaccess(player, tile) removes the tile access from this world. it uses player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeTileAccess</span>(player, tile)</div>
+          <p class="method-desc">Removes the tile access from this world. It uses player, tile.</p>
+          <pre class="method-code"><code>world:removeTileAccess(player, tile)</code></pre>
+        </div>
+        <div class="method-card" id="world-removealltileaccess" data-search="world:removealltileaccess() removes the all tile access from this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeAllTileAccess</span>()</div>
+          <p class="method-desc">Removes the all tile access from this world.</p>
+          <pre class="method-code"><code>world:removeAllTileAccess()</code></pre>
+        </div>
+        <div class="method-card" id="world-removeaccess-player" data-search="world:removeaccess(player) removes the access from this world. it uses player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeAccess</span>(player)</div>
+          <p class="method-desc">Removes the access from this world. It uses player.</p>
+          <pre class="method-code"><code>world:removeAccess(player)</code></pre>
+        </div>
+        <div class="method-card" id="world-removenpc-player" data-search="world:removenpc(player) removes the npc from this world. it uses player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeNPC</span>(player)</div>
+          <p class="method-desc">Removes the NPC from this world. It uses player.</p>
+          <pre class="method-code"><code>world:removeNPC(player)</code></pre>
+        </div>
+        <div class="method-card" id="world-redeemcode-player-code" data-search="world:redeemcode(player, code) redeems the code for this world. it uses player, code.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">redeemCode</span>(player, code)</div>
+          <p class="method-desc">Redeems the code for this world. It uses player, code.</p>
+          <pre class="method-code"><code>world:redeemCode(player, "mycode")</code></pre>
+        </div>
+        <div class="method-card" id="world-removenuke-unbanbannedusers" data-search="world:removenuke(unbanbannedusers) removes the nuke from this world. it uses unbanbannedusers.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeNuke</span>(unbanBannedUsers)</div>
+          <p class="method-desc">Removes the nuke from this world. It uses unbanBannedUsers.</p>
+          <pre class="method-code"><code>world:removeNuke(1)</code></pre>
+        </div>
+        <div class="method-card" id="world-removemachinecap-item-id" data-search="world:removemachinecap(item_id) removes the machine cap from this world. it uses item_id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">removeMachineCap</span>(item_id)</div>
+          <p class="method-desc">Removes the machine cap from this world. It uses item_id.</p>
+          <pre class="method-code"><code>world:removeMachineCap(242)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-S">
+      <h2 class="letter-group-title"><span class="tag">S</span>S &middot; 14 methods</h2>
+      
+        <div class="method-card" id="world-setowner-user-id" data-search="world:setowner(user_id) sets the owner for this world. it uses user_id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setOwner</span>(user_id)</div>
+          <p class="method-desc">Sets the owner for this world. It uses user_id.</p>
+          <pre class="method-code"><code>world:setOwner(0)</code></pre>
+        </div>
+        <div class="method-card" id="world-spawnitem-x-y-itemid-itemcount-optional-center-item" data-search="world:spawnitem(x, y, itemid, itemcount, optional - center_item) spawns an item drop at the provided world coordinates.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">spawnItem</span>(x, y, itemID, itemCount, optional - center_item)</div>
+          <p class="method-desc">Spawns an item drop at the provided world coordinates.</p>
+          <pre class="method-code"><code>world:spawnItem(10, 10, 242, 1, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-spawngems-x-y-gemscount-optional-player" data-search="world:spawngems(x, y, gemscount, optional - player) spawns gem drops at the provided world coordinates, optionally attributed to a player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">spawnGems</span>(x, y, gemsCount, optional - player)</div>
+          <p class="method-desc">Spawns gem drops at the provided world coordinates, optionally attributed to a player.</p>
+          <pre class="method-code"><code>world:spawnGems(10, 10, 50, player)</code></pre>
+        </div>
+        <div class="method-card" id="world-settileforeground-tile-id-optional-visual-update-optional-player" data-search="world:settileforeground(tile, id, optional - visual_update, optional - player) sets the tile foreground for this world. it uses tile, id, optional visual_update, optional player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setTileForeground</span>(tile, id, optional - visual_update, optional - player)</div>
+          <p class="method-desc">Sets the tile foreground for this world. It uses tile, id, optional visual_update, optional player.</p>
+          <pre class="method-code"><code>world:setTileForeground(tile, 242, 1, player)</code></pre>
+        </div>
+        <div class="method-card" id="world-settilebackground-tile-id-optional-visual-update-optional-player" data-search="world:settilebackground(tile, id, optional - visual_update, optional - player) sets the tile background for this world. it uses tile, id, optional visual_update, optional player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setTileBackground</span>(tile, id, optional - visual_update, optional - player)</div>
+          <p class="method-desc">Sets the tile background for this world. It uses tile, id, optional visual_update, optional player.</p>
+          <pre class="method-code"><code>world:setTileBackground(tile, 242, 1, player)</code></pre>
+        </div>
+        <div class="method-card" id="world-setplayerposition-player-x-y-optional-no-packet" data-search="world:setplayerposition(player, x, y, optional - no_packet) sets the player position for this world. it uses player, x, y, optional no_packet.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setPlayerPosition</span>(player, x, y, optional - no_packet)</div>
+          <p class="method-desc">Sets the player position for this world. It uses player, x, y, optional no_packet.</p>
+          <pre class="method-code"><code>world:setPlayerPosition(player, 10, 10, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-sendplayermessage-player-message" data-search="world:sendplayermessage(player, message) sends the player message to the target client or service. it uses player, message.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">sendPlayerMessage</span>(player, message)</div>
+          <p class="method-desc">Sends the player message to the target client or service. It uses player, message.</p>
+          <pre class="method-code"><code>world:sendPlayerMessage(player, "Hello!")</code></pre>
+        </div>
+        <div class="method-card" id="world-setclothing-player-item-id" data-search="world:setclothing(player, item_id) sets the clothing for this world. it uses player, item_id.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setClothing</span>(player, item_id)</div>
+          <p class="method-desc">Sets the clothing for this world. It uses player, item_id.</p>
+          <pre class="method-code"><code>world:setClothing(player, 242)</code></pre>
+        </div>
+        <div class="method-card" id="world-setweather-weatherid" data-search="world:setweather(weatherid) sets the weather for this world. it uses weatherid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setWeather</span>(weatherID)</div>
+          <p class="method-desc">Sets the weather for this world. It uses weatherID.</p>
+          <pre class="method-code"><code>world:setWeather(242)</code></pre>
+        </div>
+        <div class="method-card" id="world-setmagplantremotetile-player-tile" data-search="world:setmagplantremotetile(player, tile) sets the magplant remote tile for this world. it uses player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setMagplantRemoteTile</span>(player, tile)</div>
+          <p class="method-desc">Sets the magplant remote tile for this world. It uses player, tile.</p>
+          <pre class="method-code"><code>world:setMagplantRemoteTile(player, tile)</code></pre>
+        </div>
+        <div class="method-card" id="world-spawnghost-tile-id-sb-wd-sp" data-search="world:spawnghost(tile, id, sb, wd, sp) spawns ghost in the relevant game context. it uses tile, id, sb, wd, sp.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">spawnGhost</span>(tile, id, sb, wd, sp)</div>
+          <p class="method-desc">Spawns ghost in the relevant game context. It uses tile, id, sb, wd, sp.</p>
+          <pre class="method-code"><code>world:spawnGhost(tile, 242, 1, 1, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-setmachinecap-item-id-item-count" data-search="world:setmachinecap(item_id, item_count) sets the machine cap for this world. it uses item_id, item_count.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setMachineCap</span>(item_id, item_count)</div>
+          <p class="method-desc">Sets the machine cap for this world. It uses item_id, item_count.</p>
+          <pre class="method-code"><code>world:setMachineCap(242, 1)</code></pre>
+        </div>
+        <div class="method-card" id="world-seteffects" data-search="world:seteffects() sets the effects for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">setEffects</span>()</div>
+          <p class="method-desc">Sets the effects for this world.</p>
+          <pre class="method-code"><code>world:setEffects()</code></pre>
+        </div>
+        <div class="method-card" id="world-save" data-search="world:save() runs the save operation for this world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">save</span>()</div>
+          <p class="method-desc">Runs the save operation for this world.</p>
+          <pre class="method-code"><code>world:save()</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-U">
+      <h2 class="letter-group-title"><span class="tag">U</span>U &middot; 5 methods</h2>
+      
+        <div class="method-card" id="world-useitemeffect-netid-itemid-secondnetid-effectdelay" data-search="world:useitemeffect(netid, itemid, secondnetid, effectdelay) runs the use item effect operation for this world. it uses netid, itemid, secondnetid, effectdelay.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">useItemEffect</span>(netID, itemID, secondNetID, effectDelay)</div>
+          <p class="method-desc">Runs the use item effect operation for this world. It uses netID, itemID, secondNetID, effectDelay.</p>
+          <pre class="method-code"><code>world:useItemEffect(242, 242, 242, 500)</code></pre>
+        </div>
+        <div class="method-card" id="world-useitemtileeffect-tile-netid-itemid-reverse-effectdelay" data-search="world:useitemtileeffect(tile, netid, itemid, reverse, effectdelay) runs the use item tile effect operation for this world. it uses tile, netid, itemid, reverse, effectdelay.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">useItemTileEffect</span>(tile, netID, itemID, reverse, effectDelay)</div>
+          <p class="method-desc">Runs the use item tile effect operation for this world. It uses tile, netID, itemID, reverse, effectDelay.</p>
+          <pre class="method-code"><code>world:useItemTileEffect(tile, 242, 242, 1, 500)</code></pre>
+        </div>
+        <div class="method-card" id="world-updateclothing-player" data-search="world:updateclothing(player) updates the clothing for this world. it uses player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">updateClothing</span>(player)</div>
+          <p class="method-desc">Updates the clothing for this world. It uses player.</p>
+          <pre class="method-code"><code>world:updateClothing(player)</code></pre>
+        </div>
+        <div class="method-card" id="world-updatetile-tile-optional-player" data-search="world:updatetile(tile, optional - player) updates the tile for this world. it uses tile, optional player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">updateTile</span>(tile, optional - player)</div>
+          <p class="method-desc">Updates the tile for this world. It uses tile, optional player.</p>
+          <pre class="method-code"><code>world:updateTile(tile, player)</code></pre>
+        </div>
+        <div class="method-card" id="world-useconsumable-player-tile-id-optional-nocallback" data-search="world:useconsumable(player, tile, id, optional - nocallback) uses a consumable item for a player on a tile, optionally skipping callback execution.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="cls">World</span>:<span class="fn">useConsumable</span>(player, tile, id, optional - noCallback)</div>
+          <p class="method-desc">Uses a consumable item for a player on a tile, optionally skipping callback execution.</p>
+          <pre class="method-code"><code>world:useConsumable(player, tile, 242, 0)</code></pre>
+        </div>
+    </section>
+    </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" style="font-family:var(--font-display);">Browse</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-A">A<span class="n">6</span></a></li><li><a href="#grp-C">C<span class="n">1</span></a></li><li><a href="#grp-D">D<span class="n">2</span></a></li><li><a href="#grp-F">F<span class="n">2</span></a></li><li><a href="#grp-G">G<span class="n">25</span></a></li><li><a href="#grp-H">H<span class="n">3</span></a></li><li><a href="#grp-I">I<span class="n">2</span></a></li><li><a href="#grp-K">K<span class="n">1</span></a></li><li><a href="#grp-N">N<span class="n">3</span></a></li><li><a href="#grp-O">O<span class="n">4</span></a></li><li><a href="#grp-P">P<span class="n">2</span></a></li><li><a href="#grp-R">R<span class="n">12</span></a></li><li><a href="#grp-S">S<span class="n">14</span></a></li><li><a href="#grp-U">U<span class="n">5</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="active" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container d-flex flex-wrap justify-content-between gap-2">
+    <span>GTPS.Host &mdash; unofficial Lua API reference</span>
+    <span>generated from source docs &middot; last updated 2026-06-27</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

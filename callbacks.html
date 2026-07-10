@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Callbacks &middot; GTPS.Host Lua API</title>
+<meta name="description" content="Every registered server callback — the raw binding list for player, tile, world &amp; Discord events.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg gtps-navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <svg class="gtps-logo" width="30" height="30" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="#a9db4d" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="4,9.5 16,16 16,28.5 4,22" fill="#6f9a2a" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,16 28,9.5 28,22 16,28.5" fill="#c97a2e" stroke="#0e1116" stroke-width="0.6"/>
+        <polygon points="16,3 28,9.5 16,16 4,9.5" fill="url(#gtpsSheen)" opacity="0.5"/>
+        <defs>
+          <linearGradient id="gtpsSheen" x1="4" y1="3" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      GTPS.Host <span style="color:var(--text-faint);font-weight:400;">/ Lua API</span>
+    </a>
+    <div class="d-flex align-items-center order-lg-3 gap-2">
+      <a class="btn-discord-nav d-none d-sm-inline-flex" href="https://discord.gg/gtpshost" target="_blank" rel="noopener" aria-label="Join the GTPS.Host Discord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse order-lg-2" id="mainNav">
+      <ul class="navbar-nav ms-auto flex-wrap">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">World & Tiles</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="world.html">World</a></li><li><a class="dropdown-item" href="tile.html">Tile</a></li><li><a class="dropdown-item" href="drop.html">Drop</a></li><li><a class="dropdown-item" href="iotm.html">IOTM</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items & Shop</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="item.html">Item</a></li><li><a class="dropdown-item" href="shopitem.html">ShopItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rendering</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="texture.html">Texture</a></li><li><a class="dropdown-item" href="sprite.html">Sprite</a></li><li><a class="dropdown-item" href="rendertexture.html">RenderTexture</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Avatar & Player</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="avatar.html">Avatar</a></li><li><a class="dropdown-item" href="avatarplayerautofarm.html">AvatarPlayerAutofarm</a></li><li><a class="dropdown-item" href="avatarplayerinventoryitem.html">AvatarPlayerInventoryItem</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Discord Integration</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="discordbot.html">DiscordBot</a></li><li><a class="dropdown-item" href="discordslashcommandevent.html">DiscordSlashCommandEvent</a></li><li><a class="dropdown-item" href="discordbuttonclickevent.html">DiscordButtonClickEvent</a></li><li><a class="dropdown-item" href="discordformsubmitevent.html">DiscordFormSubmitEvent</a></li><li><a class="dropdown-item" href="discordmessagecreateevent.html">DiscordMessageCreateEvent</a></li></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item active" href="callbacks.html">Callbacks</a></li></ul>
+        </li>
+      </ul>
+      <a class="btn-discord-nav d-sm-none mt-2" href="https://discord.gg/gtpshost" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.893.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Join Discord</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container docs-shell" style="padding-top:5.5rem;">
+  <div class="row">
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="docs-sidebar">
+        
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-Player-Events">Player Events<span class="n">70</span></a></li><li><a href="#grp-Tile-Events">Tile Events<span class="n">7</span></a></li><li><a href="#grp-World-Events">World Events<span class="n">4</span></a></li><li><a href="#grp-Discord-Events">Discord Events<span class="n">5</span></a></li><li><a href="#grp-Leaderboard-Stats">Leaderboard &amp; Stats<span class="n">1</span></a></li><li><a href="#grp-Server-System">Server &amp; System<span class="n">4</span></a></li><li><a href="#grp-Other-Events">Other Events<span class="n">1</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="active" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <button class="btn btn-outline-light btn-sm d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+        &#9776; Browse &middot; jump to section or object
+      </button>
+
+      <h1 class="class-heading"><span class="slot" style="background:linear-gradient(135deg,#ffd166,#ffd166dd);width:38px;height:38px;font-size:.95rem;border-radius:7px;">CB</span>Callbacks</h1>
+      <p class="class-sub">Every registered server callback — the raw binding list for player, tile, world &amp; Discord events.</p>
+      <span class="method-count-pill"><span class="dot"></span>92 callbacks documented</span>
+
+      <div class="search-wrap mt-4">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="docs-search" id="docsSearch" placeholder="Filter Callbacks&hellip; e.g. a name or keyword">
+      </div>
+      <div class="search-empty" id="searchEmpty">No entries match that search.</div>
+
+      
+    <section class="letter-group" id="grp-Player-Events">
+      <h2 class="letter-group-title"><span class="tag">P</span>Player Events &middot; 70 callbacks</h2>
+      
+        <div class="method-card" id="onplayerchatcallback" data-search="onplayerchatcallback registers or documents the player chat callback. it receives world, player, message.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerChatCallback</span></div>
+          <p class="method-desc">Registers or documents the player chat callback. It receives world, player, message.</p>
+          <pre class="method-code"><code>onPlayerChatCallback(<span class="kw">function</span>(world, player, message)
+    -- Fires for the player chat callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercommandcallback" data-search="onplayercommandcallback registers or documents the player command callback. it receives world, player, command.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCommandCallback</span></div>
+          <p class="method-desc">Registers or documents the player command callback. It receives world, player, command.</p>
+          <pre class="method-code"><code>onPlayerCommandCallback(<span class="kw">function</span>(world, player, command)
+    -- Fires for the player command callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdialogcallback" data-search="onplayerdialogcallback registers or documents the player dialog response callback. it receives world, player, dialogname.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDialogCallback</span></div>
+          <p class="method-desc">Registers or documents the player dialog response callback. It receives world, player, dialogName.</p>
+          <pre class="method-code"><code>onPlayerDialogCallback(<span class="kw">function</span>(world, player, dialogName)
+    -- Fires for the player dialog response callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerlogincallback" data-search="onplayerlogincallback registers or documents the player login callback. it receives player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerLoginCallback</span></div>
+          <p class="method-desc">Registers or documents the player login callback. It receives player.</p>
+          <pre class="method-code"><code>onPlayerLoginCallback(<span class="kw">function</span>(player)
+    -- Fires for the player login callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerfirsttimelogincallback" data-search="onplayerfirsttimelogincallback registers or documents the first-time player login callback. it receives player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerFirstTimeLoginCallback</span></div>
+          <p class="method-desc">Registers or documents the first-time player login callback. It receives player.</p>
+          <pre class="method-code"><code>onPlayerFirstTimeLoginCallback(<span class="kw">function</span>(player)
+    -- Fires for the first-time player login callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerregistercallback" data-search="onplayerregistercallback registers or documents the player registration callback. it receives world, player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerRegisterCallback</span></div>
+          <p class="method-desc">Registers or documents the player registration callback. It receives world, player.</p>
+          <pre class="method-code"><code>onPlayerRegisterCallback(<span class="kw">function</span>(world, player)
+    -- Fires for the player registration callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayeractioncallback" data-search="onplayeractioncallback registers or documents the player action packet callback. it receives world, player, action.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerActionCallback</span></div>
+          <p class="method-desc">Registers or documents the player action packet callback. It receives world, player, action.</p>
+          <pre class="method-code"><code>onPlayerActionCallback(<span class="kw">function</span>(world, player, action)
+    -- Fires for the player action packet callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerenterworldcallback" data-search="onplayerenterworldcallback registers or documents the player entering a world callback. it receives world, player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerEnterWorldCallback</span></div>
+          <p class="method-desc">Registers or documents the player entering a world callback. It receives world, player.</p>
+          <pre class="method-code"><code>onPlayerEnterWorldCallback(<span class="kw">function</span>(world, player)
+    -- Fires for the player entering a world callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayervalidateworldcallback" data-search="onplayervalidateworldcallback registers or documents the world validation for a player callback. it receives world, player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerValidateWorldCallback</span></div>
+          <p class="method-desc">Registers or documents the world validation for a player callback. It receives world, player.</p>
+          <pre class="method-code"><code>onPlayerValidateWorldCallback(<span class="kw">function</span>(world, player)
+    -- Fires for the world validation for a player callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerleaveworldcallback" data-search="onplayerleaveworldcallback registers or documents the player leaving a world callback. it receives world, player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerLeaveWorldCallback</span></div>
+          <p class="method-desc">Registers or documents the player leaving a world callback. It receives world, player.</p>
+          <pre class="method-code"><code>onPlayerLeaveWorldCallback(<span class="kw">function</span>(world, player)
+    -- Fires for the player leaving a world callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdisconnectcallback" data-search="onplayerdisconnectcallback registers or documents the player disconnect callback. it receives player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDisconnectCallback</span></div>
+          <p class="method-desc">Registers or documents the player disconnect callback. It receives player.</p>
+          <pre class="method-code"><code>onPlayerDisconnectCallback(<span class="kw">function</span>(player)
+    -- Fires for the player disconnect callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdeathcallback" data-search="onplayerdeathcallback registers or documents the player death callback. it receives world, player, spikekill.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDeathCallback</span></div>
+          <p class="method-desc">Registers or documents the player death callback. It receives world, player, spikeKill.</p>
+          <pre class="method-code"><code>onPlayerDeathCallback(<span class="kw">function</span>(world, player, spikeKill)
+    -- Fires for the player death callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayertradecallback" data-search="onplayertradecallback registers or documents the player trade callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerTradeCallback</span></div>
+          <p class="method-desc">Registers or documents the player trade callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerTradeCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player trade callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerboostclaimcallback" data-search="onplayerboostclaimcallback registers or documents the player boost claim callback. it receives player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerBoostClaimCallback</span></div>
+          <p class="method-desc">Registers or documents the player boost claim callback. It receives player.</p>
+          <pre class="method-code"><code>onPlayerBoostClaimCallback(<span class="kw">function</span>(player)
+    -- Fires for the player boost claim callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayertrashcallback" data-search="onplayertrashcallback registers or documents the player trashing an item callback. it receives world, player, itemid, itemcount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerTrashCallback</span></div>
+          <p class="method-desc">Registers or documents the player trashing an item callback. It receives world, player, itemID, itemCount.</p>
+          <pre class="method-code"><code>onPlayerTrashCallback(<span class="kw">function</span>(world, player, itemID, itemCount)
+    -- Fires for the player trashing an item callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerrecyclecallback" data-search="onplayerrecyclecallback registers or documents the player recycling an item callback. it receives world, player, itemid, itemcount, gems.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerRecycleCallback</span></div>
+          <p class="method-desc">Registers or documents the player recycling an item callback. It receives world, player, itemID, itemCount, gems.</p>
+          <pre class="method-code"><code>onPlayerRecycleCallback(<span class="kw">function</span>(world, player, itemID, itemCount, gems)
+    -- Fires for the player recycling an item callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercrimecallback" data-search="onplayercrimecallback registers or documents the player crime reward callback. it receives world, player, rewardid, rewardamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCrimeCallback</span></div>
+          <p class="method-desc">Registers or documents the player crime reward callback. It receives world, player, rewardID, rewardAmount.</p>
+          <pre class="method-code"><code>onPlayerCrimeCallback(<span class="kw">function</span>(world, player, rewardID, rewardAmount)
+    -- Fires for the player crime reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayersurgerycallback" data-search="onplayersurgerycallback registers or documents the player surgery result callback. it receives world, player, resultid, resultamount, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerSurgeryCallback</span></div>
+          <p class="method-desc">Registers or documents the player surgery result callback. It receives world, player, resultID, resultAmount, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerSurgeryCallback(<span class="kw">function</span>(world, player, resultID, resultAmount, targetPlayer)
+    -- Fires for the player surgery result callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerkillcallback" data-search="onplayerkillcallback registers or documents the player kill event callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerKillCallback</span></div>
+          <p class="method-desc">Registers or documents the player kill event callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerKillCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player kill event callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerpunchplayercallback" data-search="onplayerpunchplayercallback registers or documents the player punching another player callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPunchPlayerCallback</span></div>
+          <p class="method-desc">Registers or documents the player punching another player callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerPunchPlayerCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player punching another player callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerpunchnpccallback" data-search="onplayerpunchnpccallback registers or documents the player punching an npc callback. it receives world, player, npc.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPunchNPCCallback</span></div>
+          <p class="method-desc">Registers or documents the player punching an NPC callback. It receives world, player, npc.</p>
+          <pre class="method-code"><code>onPlayerPunchNPCCallback(<span class="kw">function</span>(world, player, npc)
+    -- Fires for the player punching an NPC callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerprovidercallback" data-search="onplayerprovidercallback registers or documents the provider collection callback. it receives world, player, tile, itemid, itemamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerProviderCallback</span></div>
+          <p class="method-desc">Registers or documents the provider collection callback. It receives world, player, tile, itemID, itemAmount.</p>
+          <pre class="method-code"><code>onPlayerProviderCallback(<span class="kw">function</span>(world, player, tile, itemID, itemAmount)
+    -- Fires for the provider collection callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerharmoniccallback" data-search="onplayerharmoniccallback registers or documents the harmonic action reward callback. it receives world, player, tile, itemid, amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerHarmonicCallback</span></div>
+          <p class="method-desc">Registers or documents the harmonic action reward callback. It receives world, player, tile, itemID, amount.</p>
+          <pre class="method-code"><code>onPlayerHarmonicCallback(<span class="kw">function</span>(world, player, tile, itemID, amount)
+    -- Fires for the harmonic action reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayergeigercallback" data-search="onplayergeigercallback registers or documents the geiger action reward callback. it receives world, player, itemid, amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerGeigerCallback</span></div>
+          <p class="method-desc">Registers or documents the Geiger action reward callback. It receives world, player, itemID, amount.</p>
+          <pre class="method-code"><code>onPlayerGeigerCallback(<span class="kw">function</span>(world, player, itemID, amount)
+    -- Fires for the Geiger action reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercatchghostcallback" data-search="onplayercatchghostcallback registers or documents the ghost catch reward callback. it receives world, player, jarid, amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCatchGhostCallback</span></div>
+          <p class="method-desc">Registers or documents the ghost catch reward callback. It receives world, player, jarID, amount.</p>
+          <pre class="method-code"><code>onPlayerCatchGhostCallback(<span class="kw">function</span>(world, player, jarID, amount)
+    -- Fires for the ghost catch reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdnacallback" data-search="onplayerdnacallback registers or documents the dna result callback. it receives world, player, resultid, resultamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDNACallback</span></div>
+          <p class="method-desc">Registers or documents the DNA result callback. It receives world, player, resultID, resultAmount.</p>
+          <pre class="method-code"><code>onPlayerDNACallback(<span class="kw">function</span>(world, player, resultID, resultAmount)
+    -- Fires for the DNA result callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerxpcallback" data-search="onplayerxpcallback registers or documents the player xp change callback. it receives world, player, amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerXPCallback</span></div>
+          <p class="method-desc">Registers or documents the player XP change callback. It receives world, player, amount.</p>
+          <pre class="method-code"><code>onPlayerXPCallback(<span class="kw">function</span>(world, player, amount)
+    -- Fires for the player XP change callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerfireputoutcallback" data-search="onplayerfireputoutcallback registers or documents the player putting out fire callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerFirePutOutCallback</span></div>
+          <p class="method-desc">Registers or documents the player putting out fire callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onPlayerFirePutOutCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the player putting out fire callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayergemsobtainedcallback" data-search="onplayergemsobtainedcallback registers or documents the player obtaining gems callback. it receives world, player, amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerGemsObtainedCallback</span></div>
+          <p class="method-desc">Registers or documents the player obtaining gems callback. It receives world, player, amount.</p>
+          <pre class="method-code"><code>onPlayerGemsObtainedCallback(<span class="kw">function</span>(world, player, amount)
+    -- Fires for the player obtaining gems callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerearngrowtokencallback" data-search="onplayerearngrowtokencallback registers or documents the player earning growtoken progress callback. it receives world, player, progressamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerEarnGrowtokenCallback</span></div>
+          <p class="method-desc">Registers or documents the player earning Growtoken progress callback. It receives world, player, progressAmount.</p>
+          <pre class="method-code"><code>onPlayerEarnGrowtokenCallback(<span class="kw">function</span>(world, player, progressAmount)
+    -- Fires for the player earning Growtoken progress callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayertrainfishcallback" data-search="onplayertrainfishcallback registers or documents the player fish training callback. it receives world, player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerTrainFishCallback</span></div>
+          <p class="method-desc">Registers or documents the player fish training callback. It receives world, player.</p>
+          <pre class="method-code"><code>onPlayerTrainFishCallback(<span class="kw">function</span>(world, player)
+    -- Fires for the player fish training callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayervariantcallback" data-search="onplayervariantcallback registers or documents the player variant packet callback. it receives player, variant, delay, netid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerVariantCallback</span></div>
+          <p class="method-desc">Registers or documents the player variant packet callback. It receives player, variant, delay, netID.</p>
+          <pre class="method-code"><code>onPlayerVariantCallback(<span class="kw">function</span>(player, variant, delay, netID)
+    -- Fires for the player variant packet callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerrawpacketcallback" data-search="onplayerrawpacketcallback registers or documents the player raw packet callback. it receives player, packet.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerRawPacketCallback</span></div>
+          <p class="method-desc">Registers or documents the player raw packet callback. It receives player, packet.</p>
+          <pre class="method-code"><code>onPlayerRawPacketCallback(<span class="kw">function</span>(player, packet)
+    -- Fires for the player raw packet callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdropcallback" data-search="onplayerdropcallback registers or documents the player dropping an item callback. it receives world, player, itemid, itemcount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDropCallback</span></div>
+          <p class="method-desc">Registers or documents the player dropping an item callback. It receives world, player, itemID, itemCount.</p>
+          <pre class="method-code"><code>onPlayerDropCallback(<span class="kw">function</span>(world, player, itemID, itemCount)
+    -- Fires for the player dropping an item callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerlevelupcallback" data-search="onplayerlevelupcallback registers or documents the player level up callback. it receives world, player, level.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerLevelUPCallback</span></div>
+          <p class="method-desc">Registers or documents the player level up callback. It receives world, player, level.</p>
+          <pre class="method-code"><code>onPlayerLevelUPCallback(<span class="kw">function</span>(world, player, level)
+    -- Fires for the player level up callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerequipclothingcallback" data-search="onplayerequipclothingcallback registers or documents the player equipping clothing callback. it receives world, player, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerEquipClothingCallback</span></div>
+          <p class="method-desc">Registers or documents the player equipping clothing callback. It receives world, player, itemID.</p>
+          <pre class="method-code"><code>onPlayerEquipClothingCallback(<span class="kw">function</span>(world, player, itemID)
+    -- Fires for the player equipping clothing callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerunequipclothingcallback" data-search="onplayerunequipclothingcallback registers or documents the player unequipping clothing callback. it receives world, player, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerUnequipClothingCallback</span></div>
+          <p class="method-desc">Registers or documents the player unequipping clothing callback. It receives world, player, itemID.</p>
+          <pre class="method-code"><code>onPlayerUnequipClothingCallback(<span class="kw">function</span>(world, player, itemID)
+    -- Fires for the player unequipping clothing callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerequippedclothingcallback" data-search="onplayerequippedclothingcallback registers or documents the player clothing equipped confirmation callback. it receives world, player, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerEquippedClothingCallback</span></div>
+          <p class="method-desc">Registers or documents the player clothing equipped confirmation callback. It receives world, player, itemID.</p>
+          <pre class="method-code"><code>onPlayerEquippedClothingCallback(<span class="kw">function</span>(world, player, itemID)
+    -- Fires for the player clothing equipped confirmation callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerunequippedclothingcallback" data-search="onplayerunequippedclothingcallback registers or documents the player clothing unequipped confirmation callback. it receives world, player, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerUnequippedClothingCallback</span></div>
+          <p class="method-desc">Registers or documents the player clothing unequipped confirmation callback. It receives world, player, itemID.</p>
+          <pre class="method-code"><code>onPlayerUnequippedClothingCallback(<span class="kw">function</span>(world, player, itemID)
+    -- Fires for the player clothing unequipped confirmation callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerpickupitemcallback" data-search="onplayerpickupitemcallback registers or documents the player picking up an item callback. it receives world, player, itemid, itemcount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPickupItemCallback</span></div>
+          <p class="method-desc">Registers or documents the player picking up an item callback. It receives world, player, itemID, itemCount.</p>
+          <pre class="method-code"><code>onPlayerPickupItemCallback(<span class="kw">function</span>(world, player, itemID, itemCount)
+    -- Fires for the player picking up an item callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerenterdoorcallback" data-search="onplayerenterdoorcallback registers or documents the player entering a door callback. it receives world, player, doortarget, doorid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerEnterDoorCallback</span></div>
+          <p class="method-desc">Registers or documents the player entering a door callback. It receives world, player, doorTarget, doorID.</p>
+          <pre class="method-code"><code>onPlayerEnterDoorCallback(<span class="kw">function</span>(world, player, doorTarget, doorID)
+    -- Fires for the player entering a door callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerplantcallback" data-search="onplayerplantcallback registers or documents the player planting on a tile callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPlantCallback</span></div>
+          <p class="method-desc">Registers or documents the player planting on a tile callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onPlayerPlantCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the player planting on a tile callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerharvestcallback" data-search="onplayerharvestcallback registers or documents the player harvesting a tile callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerHarvestCallback</span></div>
+          <p class="method-desc">Registers or documents the player harvesting a tile callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onPlayerHarvestCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the player harvesting a tile callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercatchfishcallback" data-search="onplayercatchfishcallback registers or documents the player catching fish or fishing reward callback. it receives world, player, rewardid, rewardamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCatchFishCallback</span></div>
+          <p class="method-desc">Registers or documents the player catching fish or fishing reward callback. It receives world, player, rewardID, rewardAmount.</p>
+          <pre class="method-code"><code>onPlayerCatchFishCallback(<span class="kw">function</span>(world, player, rewardID, rewardAmount)
+    -- Fires for the player catching fish or fishing reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerwrenchcallback" data-search="onplayerwrenchcallback registers or documents the player wrench action callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerWrenchCallback</span></div>
+          <p class="method-desc">Registers or documents the player wrench action callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerWrenchCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player wrench action callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerblessingclaimcallback" data-search="onplayerblessingclaimcallback registers or documents the player blessing claim callback. it receives world, player, blessingid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerBlessingClaimCallback</span></div>
+          <p class="method-desc">Registers or documents the player blessing claim callback. It receives world, player, blessingID.</p>
+          <pre class="method-code"><code>onPlayerBlessingClaimCallback(<span class="kw">function</span>(world, player, blessingID)
+    -- Fires for the player blessing claim callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerconvertitemcallback" data-search="onplayerconvertitemcallback registers or documents the player item conversion callback. it receives world, player, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerConvertItemCallback</span></div>
+          <p class="method-desc">Registers or documents the player item conversion callback. It receives world, player, itemID.</p>
+          <pre class="method-code"><code>onPlayerConvertItemCallback(<span class="kw">function</span>(world, player, itemID)
+    -- Fires for the player item conversion callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayeraddfriendcallback" data-search="onplayeraddfriendcallback registers or documents the player adding a friend callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerAddFriendCallback</span></div>
+          <p class="method-desc">Registers or documents the player adding a friend callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerAddFriendCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player adding a friend callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerprofilerequest" data-search="onplayerprofilerequest registers or documents the player profile request callback. it receives world, player, tab, flags.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerProfileRequest</span></div>
+          <p class="method-desc">Registers or documents the player profile request callback. It receives world, player, tab, flags.</p>
+          <pre class="method-code"><code>onPlayerProfileRequest(<span class="kw">function</span>(world, player, tab, flags)
+    -- Fires for the player profile request callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onstorerequest" data-search="onstorerequest registers or documents the store request callback. it receives world, player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onStoreRequest</span></div>
+          <p class="method-desc">Registers or documents the store request callback. It receives world, player.</p>
+          <pre class="method-code"><code>onStoreRequest(<span class="kw">function</span>(world, player)
+    -- Fires for the store request callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerconsumablecallback" data-search="onplayerconsumablecallback registers or documents the player consumable use callback. it receives world, player, tile, itemid, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerConsumableCallback</span></div>
+          <p class="method-desc">Registers or documents the player consumable use callback. It receives world, player, tile, itemID, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerConsumableCallback(<span class="kw">function</span>(world, player, tile, itemID, targetPlayer)
+    -- Fires for the player consumable use callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayertick" data-search="onplayertick registers or documents the player tick callback. it receives player.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerTick</span></div>
+          <p class="method-desc">Registers or documents the player tick callback. It receives player.</p>
+          <pre class="method-code"><code>onPlayerTick(<span class="kw">function</span>(player)
+    -- Fires for the player tick callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdungeonentityslaincallback" data-search="onplayerdungeonentityslaincallback registers or documents the dungeon entity slain by a player callback. it receives world, player, entitytype.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDungeonEntitySlainCallback</span></div>
+          <p class="method-desc">Registers or documents the dungeon entity slain by a player callback. It receives world, player, entityType.</p>
+          <pre class="method-code"><code>onPlayerDungeonEntitySlainCallback(<span class="kw">function</span>(world, player, entityType)
+    -- Fires for the dungeon entity slain by a player callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerstartopiacallback" data-search="onplayerstartopiacallback registers or documents the startopia reward callback. it receives world, player, rewardid, rewardamount, statusid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerStartopiaCallback</span></div>
+          <p class="method-desc">Registers or documents the Startopia reward callback. It receives world, player, rewardID, rewardAmount, statusID.</p>
+          <pre class="method-code"><code>onPlayerStartopiaCallback(<span class="kw">function</span>(world, player, rewardID, rewardAmount, statusID)
+    -- Fires for the Startopia reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerpunchcallback" data-search="onplayerpunchcallback registers or documents the player punch coordinates callback. it receives world, player, x, y.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPunchCallback</span></div>
+          <p class="method-desc">Registers or documents the player punch coordinates callback. It receives world, player, x, y.</p>
+          <pre class="method-code"><code>onPlayerPunchCallback(<span class="kw">function</span>(world, player, x, y)
+    -- Fires for the player punch coordinates callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercookingcallback" data-search="onplayercookingcallback registers or documents the player-cooking callback. the handler receives the world, player, result item id, and result amount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCookingCallback</span></div>
+          <p class="method-desc">Registers or documents the player-cooking callback. The handler receives the world, player, result item ID, and result amount.</p>
+          <pre class="method-code"><code>onPlayerCookingCallback(<span class="kw">function</span>(world, player, resultID, resultAmount)
+    -- Fires for the player-cooking callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayervendingbuycallback" data-search="onplayervendingbuycallback registers or documents the player buying from vending callback. it receives world, player, tile, itemid, itemcount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerVendingBuyCallback</span></div>
+          <p class="method-desc">Registers or documents the player buying from vending callback. It receives world, player, tile, itemID, itemCount.</p>
+          <pre class="method-code"><code>onPlayerVendingBuyCallback(<span class="kw">function</span>(world, player, tile, itemID, itemCount)
+    -- Fires for the player buying from vending callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerspliceseedcallback" data-search="onplayerspliceseedcallback registers or documents the player splicing seeds callback. it receives world, player, tile, seedid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerSpliceSeedCallback</span></div>
+          <p class="method-desc">Registers or documents the player splicing seeds callback. It receives world, player, tile, seedID.</p>
+          <pre class="method-code"><code>onPlayerSpliceSeedCallback(<span class="kw">function</span>(world, player, tile, seedID)
+    -- Fires for the player splicing seeds callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercardbattlecallback" data-search="onplayercardbattlecallback registers or documents the player card battle reward callback. it receives world, player, targetplayer, rewardid, rewardamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCardBattleCallback</span></div>
+          <p class="method-desc">Registers or documents the player card battle reward callback. It receives world, player, targetPlayer, rewardID, rewardAmount.</p>
+          <pre class="method-code"><code>onPlayerCardBattleCallback(<span class="kw">function</span>(world, player, targetPlayer, rewardID, rewardAmount)
+    -- Fires for the player card battle reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerdepositcallback" data-search="onplayerdepositcallback registers or documents the player depositing an item callback. it receives world, player, tile, itemid, itemcount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerDepositCallback</span></div>
+          <p class="method-desc">Registers or documents the player depositing an item callback. It receives world, player, tile, itemID, itemCount.</p>
+          <pre class="method-code"><code>onPlayerDepositCallback(<span class="kw">function</span>(world, player, tile, itemID, itemCount)
+    -- Fires for the player depositing an item callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerrolechangedcallback" data-search="onplayerrolechangedcallback registers or documents the player role change callback. it receives player, newroleid, oldroleid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerRoleChangedCallback</span></div>
+          <p class="method-desc">Registers or documents the player role change callback. It receives player, newRoleID, oldRoleID.</p>
+          <pre class="method-code"><code>onPlayerRoleChangedCallback(<span class="kw">function</span>(player, newRoleID, oldRoleID)
+    -- Fires for the player role change callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerlosecardbattlecallback" data-search="onplayerlosecardbattlecallback registers or documents the player losing a card battle callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerLoseCardBattleCallback</span></div>
+          <p class="method-desc">Registers or documents the player losing a card battle callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerLoseCardBattleCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player losing a card battle callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerearnachievementcallback" data-search="onplayerearnachievementcallback registers or documents the player earning an achievement callback. it receives world, player, achievementtype.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerEarnAchievementCallback</span></div>
+          <p class="method-desc">Registers or documents the player earning an achievement callback. It receives world, player, achievementType.</p>
+          <pre class="method-code"><code>onPlayerEarnAchievementCallback(<span class="kw">function</span>(world, player, achievementType)
+    -- Fires for the player earning an achievement callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayersewcallback" data-search="onplayersewcallback registers or documents the player sewing reward callback. it receives world, player, resultid, resultamount.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerSewCallback</span></div>
+          <p class="method-desc">Registers or documents the player sewing reward callback. It receives world, player, resultID, resultAmount.</p>
+          <pre class="method-code"><code>onPlayerSewCallback(<span class="kw">function</span>(world, player, resultID, resultAmount)
+    -- Fires for the player sewing reward callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerpetbattlecallback" data-search="onplayerpetbattlecallback registers or documents the player pet battle callback. it receives world, player, targetplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPetBattleCallback</span></div>
+          <p class="method-desc">Registers or documents the player pet battle callback. It receives world, player, targetPlayer.</p>
+          <pre class="method-code"><code>onPlayerPetBattleCallback(<span class="kw">function</span>(world, player, targetPlayer)
+    -- Fires for the player pet battle callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayergemschangedcallback" data-search="onplayergemschangedcallback registers or documents the player gem balance change callback. it receives world, player, previousgems.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerGemsChangedCallback</span></div>
+          <p class="method-desc">Registers or documents the player gem balance change callback. It receives world, player, previousGems.</p>
+          <pre class="method-code"><code>onPlayerGemsChangedCallback(<span class="kw">function</span>(world, player, previousGems)
+    -- Fires for the player gem balance change callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayercoinschangedcallback" data-search="onplayercoinschangedcallback registers or documents the player coin balance change callback. it receives world, player, previouscoins.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerCoinsChangedCallback</span></div>
+          <p class="method-desc">Registers or documents the player coin balance change callback. It receives world, player, previousCoins.</p>
+          <pre class="method-code"><code>onPlayerCoinsChangedCallback(<span class="kw">function</span>(world, player, previousCoins)
+    -- Fires for the player coin balance change callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerplaymodaddedcallback" data-search="onplayerplaymodaddedcallback registers or documents the playmod added to a player callback. it receives player, modtype, lastsforseconds, applier.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPlaymodAddedCallback</span></div>
+          <p class="method-desc">Registers or documents the playmod added to a player callback. It receives player, modType, lastsForSeconds, applier.</p>
+          <pre class="method-code"><code>onPlayerPlaymodAddedCallback(<span class="kw">function</span>(player, modType, lastsForSeconds, applier)
+    -- Fires for the playmod added to a player callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerplaymodremovedcallback" data-search="onplayerplaymodremovedcallback registers or documents the playmod removed from a player callback. it receives player, modtype.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerPlaymodRemovedCallback</span></div>
+          <p class="method-desc">Registers or documents the playmod removed from a player callback. It receives player, modType.</p>
+          <pre class="method-code"><code>onPlayerPlaymodRemovedCallback(<span class="kw">function</span>(player, modType)
+    -- Fires for the playmod removed from a player callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayerfishingstatuscallback" data-search="onplayerfishingstatuscallback registers or documents the player fishing status update callback. it receives world, player, tile, status, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerFishingStatusCallback</span></div>
+          <p class="method-desc">Registers or documents the player fishing status update callback. It receives world, player, tile, status, itemID.</p>
+          <pre class="method-code"><code>onPlayerFishingStatusCallback(<span class="kw">function</span>(world, player, tile, status, itemID)
+    -- Fires for the player fishing status update callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-Tile-Events">
+      <h2 class="letter-group-title"><span class="tag">T</span>Tile Events &middot; 7 callbacks</h2>
+      
+        <div class="method-card" id="ontilewrenchcallback" data-search="ontilewrenchcallback registers or documents the tile wrench action callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onTileWrenchCallback</span></div>
+          <p class="method-desc">Registers or documents the tile wrench action callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onTileWrenchCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the tile wrench action callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ontilebreakcallback" data-search="ontilebreakcallback registers or documents the tile break callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onTileBreakCallback</span></div>
+          <p class="method-desc">Registers or documents the tile break callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onTileBreakCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the tile break callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ontileplacecallback" data-search="ontileplacecallback registers or documents the tile placement attempt callback. it receives world, player, tile, itemid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onTilePlaceCallback</span></div>
+          <p class="method-desc">Registers or documents the tile placement attempt callback. It receives world, player, tile, itemID.</p>
+          <pre class="method-code"><code>onTilePlaceCallback(<span class="kw">function</span>(world, player, tile, itemID)
+    -- Fires for the tile placement attempt callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ontileplacedcallback" data-search="ontileplacedcallback registers or documents the tile placement completion callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onTilePlacedCallback</span></div>
+          <p class="method-desc">Registers or documents the tile placement completion callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onTilePlacedCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the tile placement completion callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ontilepunchcallback" data-search="ontilepunchcallback registers or documents the tile punch callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onTilePunchCallback</span></div>
+          <p class="method-desc">Registers or documents the tile punch callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onTilePunchCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the tile punch callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onplayeractivatetilecallback" data-search="onplayeractivatetilecallback registers or documents the player activating a tile callback. it receives world, player, tile.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onPlayerActivateTileCallback</span></div>
+          <p class="method-desc">Registers or documents the player activating a tile callback. It receives world, player, tile.</p>
+          <pre class="method-code"><code>onPlayerActivateTileCallback(<span class="kw">function</span>(world, player, tile)
+    -- Fires for the player activating a tile callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ongettileextradatacallback" data-search="ongettileextradatacallback registers or documents the tile extra-data request callback. it receives world, tile, gameversion, refplayer.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onGetTileExtraDataCallback</span></div>
+          <p class="method-desc">Registers or documents the tile extra-data request callback. It receives world, tile, gameVersion, refPlayer.</p>
+          <pre class="method-code"><code>onGetTileExtraDataCallback(<span class="kw">function</span>(world, tile, gameVersion, refPlayer)
+    -- Fires for the tile extra-data request callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-World-Events">
+      <h2 class="letter-group-title"><span class="tag">W</span>World Events &middot; 4 callbacks</h2>
+      
+        <div class="method-card" id="onworldmenurequest" data-search="onworldmenurequest registers or documents the world menu request callback. it receives player, categoryselection, newselection.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onWorldMenuRequest</span></div>
+          <p class="method-desc">Registers or documents the world menu request callback. It receives player, categorySelection, newSelection.</p>
+          <pre class="method-code"><code>onWorldMenuRequest(<span class="kw">function</span>(player, categorySelection, newSelection)
+    -- Fires for the world menu request callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onworldtick" data-search="onworldtick registers or documents the world tick callback. it receives world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onWorldTick</span></div>
+          <p class="method-desc">Registers or documents the world tick callback. It receives world.</p>
+          <pre class="method-code"><code>onWorldTick(<span class="kw">function</span>(world)
+    -- Fires for the world tick callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onworldloaded" data-search="onworldloaded registers or documents the world load callback. it receives world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onWorldLoaded</span></div>
+          <p class="method-desc">Registers or documents the world load callback. It receives world.</p>
+          <pre class="method-code"><code>onWorldLoaded(<span class="kw">function</span>(world)
+    -- Fires for the world load callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onworldoffloaded" data-search="onworldoffloaded registers or documents the world offload callback. it receives world.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onWorldOffloaded</span></div>
+          <p class="method-desc">Registers or documents the world offload callback. It receives world.</p>
+          <pre class="method-code"><code>onWorldOffloaded(<span class="kw">function</span>(world)
+    -- Fires for the world offload callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-Discord-Events">
+      <h2 class="letter-group-title"><span class="tag">D</span>Discord Events &middot; 5 callbacks</h2>
+      
+        <div class="method-card" id="ondiscordmessagecreatecallback" data-search="ondiscordmessagecreatecallback registers or documents the discord message creation callback. it receives event.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onDiscordMessageCreateCallback</span></div>
+          <p class="method-desc">Registers or documents the Discord message creation callback. It receives event.</p>
+          <pre class="method-code"><code>onDiscordMessageCreateCallback(<span class="kw">function</span>(event)
+    -- Fires for the Discord message creation callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ondiscordbuttonclickcallback" data-search="ondiscordbuttonclickcallback registers or documents the discord button click callback. it receives event.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onDiscordButtonClickCallback</span></div>
+          <p class="method-desc">Registers or documents the Discord button click callback. It receives event.</p>
+          <pre class="method-code"><code>onDiscordButtonClickCallback(<span class="kw">function</span>(event)
+    -- Fires for the Discord button click callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ondiscordformsubmitcallback" data-search="ondiscordformsubmitcallback registers or documents the discord form submission callback. it receives event.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onDiscordFormSubmitCallback</span></div>
+          <p class="method-desc">Registers or documents the Discord form submission callback. It receives event.</p>
+          <pre class="method-code"><code>onDiscordFormSubmitCallback(<span class="kw">function</span>(event)
+    -- Fires for the Discord form submission callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ondiscordbotreadycallback" data-search="ondiscordbotreadycallback registers or documents the discord bot ready event callback. it receives no arguments.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onDiscordBotReadyCallback</span></div>
+          <p class="method-desc">Registers or documents the Discord bot ready event callback. It receives no arguments.</p>
+          <pre class="method-code"><code>onDiscordBotReadyCallback(<span class="kw">function</span>()
+    -- Fires for the Discord bot ready event callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ondiscordslashcommandcallback" data-search="ondiscordslashcommandcallback registers or documents the discord slash command callback. it receives event.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onDiscordSlashCommandCallback</span></div>
+          <p class="method-desc">Registers or documents the Discord slash command callback. It receives event.</p>
+          <pre class="method-code"><code>onDiscordSlashCommandCallback(<span class="kw">function</span>(event)
+    -- Fires for the Discord slash command callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-Leaderboard-Stats">
+      <h2 class="letter-group-title"><span class="tag">L</span>Leaderboard &amp; Stats &middot; 1 callback</h2>
+      
+        <div class="method-card" id="onleaderboardendcallback" data-search="onleaderboardendcallback registers or documents the leaderboard completion callback. it receives player, leaderboardtype, rank.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onLeaderboardEndCallback</span></div>
+          <p class="method-desc">Registers or documents the leaderboard completion callback. It receives player, leaderboardType, rank.</p>
+          <pre class="method-code"><code>onLeaderboardEndCallback(<span class="kw">function</span>(player, leaderboardType, rank)
+    -- Fires for the leaderboard completion callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-Server-System">
+      <h2 class="letter-group-title"><span class="tag">S</span>Server &amp; System &middot; 4 callbacks</h2>
+      
+        <div class="method-card" id="onautosaverequest" data-search="onautosaverequest registers or documents the auto-save request callback. it receives no arguments.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onAutoSaveRequest</span></div>
+          <p class="method-desc">Registers or documents the auto-save request callback. It receives no arguments.</p>
+          <pre class="method-code"><code>onAutoSaveRequest(<span class="kw">function</span>()
+    -- Fires for the auto-save request callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="oneventchangedcallback" data-search="oneventchangedcallback registers or documents the server event change callback. it receives eventid, oldeventid.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onEventChangedCallback</span></div>
+          <p class="method-desc">Registers or documents the server event change callback. It receives eventID, oldEventID.</p>
+          <pre class="method-code"><code>onEventChangedCallback(<span class="kw">function</span>(eventID, oldEventID)
+    -- Fires for the server event change callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="ontick" data-search="ontick registers or documents the server tick callback. it receives no arguments.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onTick</span></div>
+          <p class="method-desc">Registers or documents the server tick callback. It receives no arguments.</p>
+          <pre class="method-code"><code>onTick(<span class="kw">function</span>()
+    -- Fires for the server tick callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+        <div class="method-card" id="onhttprequest" data-search="onhttprequest registers or documents the incoming http request callback. it receives request.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onHTTPRequest</span></div>
+          <p class="method-desc">Registers or documents the incoming HTTP request callback. It receives request.</p>
+          <pre class="method-code"><code>onHTTPRequest(<span class="kw">function</span>(request)
+    -- Fires for the incoming HTTP request callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    <section class="letter-group" id="grp-Other-Events">
+      <h2 class="letter-group-title"><span class="tag">O</span>Other Events &middot; 1 callback</h2>
+      
+        <div class="method-card" id="onserverreceiverawpacketcallback" data-search="onserverreceiverawpacketcallback registers or documents the server receiving a raw packet callback. it receives world, player, packet.">
+          <button class="copy-btn" type="button" title="Copy code">copy</button>
+          <div class="method-sig"><span class="fn">onServerReceiveRawPacketCallback</span></div>
+          <p class="method-desc">Registers or documents the server receiving a raw packet callback. It receives world, player, packet.</p>
+          <pre class="method-code"><code>onServerReceiveRawPacketCallback(<span class="kw">function</span>(world, player, packet)
+    -- Fires for the server receiving a raw packet callback
+<span class="kw">end</span>)</code></pre>
+        </div>
+    </section>
+    </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" style="font-family:var(--font-display);">Browse</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    
+      <div class="sidebar-label">On this page</div>
+      <ul class="letter-nav"><li><a href="#grp-Player-Events">Player Events<span class="n">70</span></a></li><li><a href="#grp-Tile-Events">Tile Events<span class="n">7</span></a></li><li><a href="#grp-World-Events">World Events<span class="n">4</span></a></li><li><a href="#grp-Discord-Events">Discord Events<span class="n">5</span></a></li><li><a href="#grp-Leaderboard-Stats">Leaderboard &amp; Stats<span class="n">1</span></a></li><li><a href="#grp-Server-System">Server &amp; System<span class="n">4</span></a></li><li><a href="#grp-Other-Events">Other Events<span class="n">1</span></a></li></ul>
+      <div class="sidebar-label">World & Tiles</div><ul class="other-classes-nav"><li><a class="" href="world.html"><span class="swatch" style="background:#9CCC3C"></span>World</a></li><li><a class="" href="tile.html"><span class="swatch" style="background:#7cd6c0"></span>Tile</a></li><li><a class="" href="drop.html"><span class="swatch" style="background:#c9975c"></span>Drop</a></li><li><a class="" href="iotm.html"><span class="swatch" style="background:#E1963B"></span>IOTM</a></li></ul><div class="sidebar-label">Items & Shop</div><ul class="other-classes-nav"><li><a class="" href="item.html"><span class="swatch" style="background:#9CCC3C"></span>Item</a></li><li><a class="" href="shopitem.html"><span class="swatch" style="background:#e2695f"></span>ShopItem</a></li></ul><div class="sidebar-label">Rendering</div><ul class="other-classes-nav"><li><a class="" href="texture.html"><span class="swatch" style="background:#f0c869"></span>Texture</a></li><li><a class="" href="sprite.html"><span class="swatch" style="background:#c58af0"></span>Sprite</a></li><li><a class="" href="rendertexture.html"><span class="swatch" style="background:#4FB3E8"></span>RenderTexture</a></li></ul><div class="sidebar-label">Avatar & Player</div><ul class="other-classes-nav"><li><a class="" href="avatar.html"><span class="swatch" style="background:#ff6b9d"></span>Avatar</a></li><li><a class="" href="avatarplayerautofarm.html"><span class="swatch" style="background:#ff8fb3"></span>AvatarPlayerAutofarm</a></li><li><a class="" href="avatarplayerinventoryitem.html"><span class="swatch" style="background:#ffb3c9"></span>AvatarPlayerInventoryItem</a></li></ul><div class="sidebar-label">Discord Integration</div><ul class="other-classes-nav"><li><a class="" href="discordbot.html"><span class="swatch" style="background:#5865F2"></span>DiscordBot</a></li><li><a class="" href="discordslashcommandevent.html"><span class="swatch" style="background:#7686f5"></span>DiscordSlashCommandEvent</a></li><li><a class="" href="discordbuttonclickevent.html"><span class="swatch" style="background:#8fa0fa"></span>DiscordButtonClickEvent</a></li><li><a class="" href="discordformsubmitevent.html"><span class="swatch" style="background:#a7b6fc"></span>DiscordFormSubmitEvent</a></li><li><a class="" href="discordmessagecreateevent.html"><span class="swatch" style="background:#c0ccfe"></span>DiscordMessageCreateEvent</a></li></ul><div class="sidebar-label">Events</div><ul class="other-classes-nav"><li><a class="active" href="callbacks.html"><span class="swatch" style="background:#ffd166"></span>Callbacks</a></li></ul>
+    
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container d-flex flex-wrap justify-content-between gap-2">
+    <span>GTPS.Host &mdash; unofficial Lua API reference</span>
+    <span>generated from source docs &middot; last updated 2026-06-27</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
